@@ -1,0 +1,10 @@
+{% if games_of_the_week: %}
+    <ul>
+        {% for game in games_of_the_week %}
+            <li>
+                {{game.home_team}} vs {{game.away_team}}
+            </li>
+    </ul>
+{% else %}
+<p> No games are played this week </p>
+{% endif %}
