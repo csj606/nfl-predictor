@@ -3,6 +3,25 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+function gameDisplay(homeTeamName: String, homeTeamRecord: String, awayTeamName: String, awayTeamRecord: String){
+  //TODO
+  return (
+    <div className='weekly-game'>
+      <img src="" className="teamLogo"/>
+      <div className='home-team-info'>
+        <p>{homeTeamName}</p>
+        <p>{homeTeamRecord}</p>
+      </div>
+      <img src="" className="versus"/>
+      <div className='away-team-info'>
+        <p>{awayTeamName}</p>
+        <p>{awayTeamRecord}</p>
+      </div>
+      <img src="" className="teamLogo"/>
+    </div>
+  )
+}
+
 function App() {
   const [count, setCount] = useState(0)
 
