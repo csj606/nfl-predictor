@@ -20,7 +20,6 @@ The application will consist of six pages
 - CI/CD pipeline: exploring GitLab CI but will likely stick with GitHub Actions
 - Testing frameworks: PyTest and likely Cypress for E2E testing
 - ML Model: Will be building a neural network using PyTorch. The model once trained will be stored using PyTorch or Pickle
-- Authorization and Authentication - Will be handled using OAuth and JWT respectively
 
 Additionally, a Terraform script will be written to provide a cloud-native version of this application, as well as an Ansible script for on-premise deployment. The entirety of the application will be containerized for ease of use.
 
