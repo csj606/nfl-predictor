@@ -1,12 +1,25 @@
+import dotenv from 'dotenv'
+
 function NavBar(){
+
+    dotenv.config()
+
+    const back = import.meta.env.VITE_BACKEND_URL
+    const homeUrl = `${back}`
+    const teamUrl = `${back}/teams`
+    const rankingsUrl = `${back}/rankings`
+    const challengesURL = `${back}/challenges`
+    const leagueURL = `${back}`
+    const login = `${back}/accounts/login`
+
     return (
         <div id="navbar">
-            <a href="">Home</a>
-            <a href= "">Teams</a>
-            <a href = "">Rankings</a>
-            <a href = "">Challenge</a>
-            <a href = "">My Leagues</a>
-            <a href = "">Login</a>
+            <a href={homeUrl}/>
+            <a href={teamUrl}/>
+            <a href={rankingsUrl}/>
+            <a href={challengesURL}/>
+            <a href={leagueURL}/>
+            <a href={login}/>
         </div>
     )
 }
