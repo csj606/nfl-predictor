@@ -38,7 +38,7 @@ def load_datasheet(year: int, team: str, are_games):
 
 def create_records(team: str, year: int):
     games = load_datasheet(year, team, True)
-    team_stats = load_datasheet(year, team, False)
+    team_stats = load_datasheet(year - 1, team, False)  # Want to load the last year for team stats
 
     records = pd.DataFrame()
 
