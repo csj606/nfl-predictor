@@ -7,6 +7,16 @@ team_names = ["buffalo", "49er", "eagles", "vikings", "bears", "jets", "giants",
               "jaguars", "texans", "chiefs", "ravens"]
 
 
+def create_files():
+    for team in team_names:
+        if team != "buffalo" and team != "dolphins" and team != "colts" and team != "jets" and team != "patriots" and team != "texans":
+            for year in [2022, 2023, 2024]:
+                with open(f"data/{team}_{year}_games.csv", 'w') as f:
+                    f.write("Stub")
+            for year in [2021, 2022, 2023]:
+                with open(f"data/{team}_{year}.csv", 'w') as f:
+                    f.write("Stub")
+
 logged_games = {}
 
 def convert_full_name_to_acronym(full_name: str):
@@ -19,7 +29,7 @@ def convert_full_name_to_acronym(full_name: str):
 def load_datasheet(year: int, team: str, are_games):
     str_year = str(year)
     if are_games:
-        file_name = f"{team}_{str_year}_games.csv"
+        file_name = f"/data/{team}_{str_year}_games.csv"
         game_record = pd.read_csv(file_name)
         game_record.columns = ["week_num", 'day_of_week', 'date_str', 'time', 'missing_hyperlink', 'win/lose', 'went_ot', 'team_rec',
                                'away_stat', 'opp_team', 'team_pt', 'opp_pt', 'num_fd', 'total_yards', 'pass_yards',
@@ -27,13 +37,18 @@ def load_datasheet(year: int, team: str, are_games):
                                'def_to', 'exp_points', 'def_exp_points', 'spec_exp_points']
         return game_record
     else:
-        file_name = f"{team}_{str_year}.csv"
+        file_name = f"/data/{team}_{str_year}.csv"
         team_record = pd.read_csv(file_name)
         team_record.columns = ["row_names", "PF", "Yds", "ply", "y/p", "to", "fl", "fst_down", "pcmp", "patt", "pyds",
                                "ptd", "pint", 'pny/a', 'pfd', 'ratt', 'ryds', 'rtd', 'ry/a', 'rfstd', 'pen', 'penyds', 'pen_fst_down',
                                '#dr', 'sc%', 'TO%', 'avg_start_pos', 'avg_time_dr', 'avg_num_plys', 'avg_dr_yds',
                                'avg_dr_pts']
         return team_record
+
+
+def get_week_num(game) -> int:
+
+    return 0
 
 
 def create_records(team: str, year: int):
@@ -68,4 +83,4 @@ def create_training_data(year: int):
 
 
 if __name__ == "__main__":
-    create_training_data(2024)
+    create_files()
