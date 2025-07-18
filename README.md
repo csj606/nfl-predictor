@@ -14,11 +14,11 @@ The application will consist of five core pages
 ### Stack:
 
 - Frontend: TypeScript + React components
-- Backend: Django Framework for right now, might explore going with Flask
+- Backend: Django
 - Database: PostgreSQL
-- CI/CD pipeline: exploring GitLab CI but will likely stick with GitHub Actions
-- Testing frameworks: PyTest and likely Cypress for E2E testing
-- ML Model: Will be building a neural network using PyTorch
+- CI/CD pipeline: GitHub Actions
+- Testing frameworks: PyTest and Selenium for testing
+- ML Model: Will be building a random forest model using Scikit-Learn
 
 - Authorization and authentication will be handled using built-in features of Django.
 - Additionally, a Terraform script will be written to provide a cloud-native version of this application, as well as an Ansible script for on-premise deployment. The entirety of the application will be containerized for ease of use.
