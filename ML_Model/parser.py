@@ -36,7 +36,7 @@ def load_datasheet(year: int, team: str, are_games):
                                'def_to', 'exp_points', 'def_exp_points', 'spec_exp_points']
         return game_record
     else:
-        file_name = f"data/{team}_{year - 1}.csv"
+        file_name = f"data/{team}_{year}.csv"
         team_record = pd.read_csv(file_name)
         team_record.columns = ["row_names", "PF", "Yds", "ply", "y/p", "to", "fl", "fst_down", "pcmp", "patt", "pyds",
                                "ptd", "pint", 'pny/a', 'pfd', 'ratt', 'ryds', 'rtd', 'ry/a', 'rfstd', 'pen', 'penyds', 'pen_fst_down',
@@ -75,29 +75,37 @@ def get_rolling_three_week_avg(stat: str, index, records) -> float:
     if index == 1:
         return 0
     elif index == 2:
-        if pd.isna(records.at[1, stat]):
+        if pd.isna(records.at[1, stat]) or records.at[1, stat] == "Canceled":
             return 0
         return records.at[1, stat]
     elif index == 3:
-        a, b = float(records.at[1, stat]), float(records.at[2, stat])
-        if pd.isna(records.at[1, stat]):
+        if pd.isna(records.at[1, stat]) or records.at[1, stat] == "Canceled":
             a = 0
-        if pd.isna(records.at[2, stat]):
+        else:
+            a = float(records.at[1, stat])
+        if pd.isna(records.at[2, stat]) or records.at[2, stat] == "Canceled":
             b = 0
+        else:
+            b = float(records.at[2, stat])
         summation = a + b
         return summation / 2
     else:
         if index < len(records):
-            a, b, c = index, index - 1, index - 2
-        else:
             a, b, c = index - 1, index - 2, index - 3
-        d, e, f = float(records.at[a, stat]), float(records.at[b, stat]), float(records.at[c, stat])
-        if pd.isna(records.at[a, stat]):
+        else:
+            a, b, c = index - 2, index - 3, index - 4
+        if pd.isna(records.at[a, stat]) or records.at[a, stat] == "Canceled":
             d = 0
-        if pd.isna(records.at[b, stat]):
+        else:
+            d = float(records.at[a, stat])
+        if pd.isna(records.at[b, stat]) or records.at[b, stat] == "Canceled":
             e = 0
-        if pd.isna(records.at[c, stat]):
+        else:
+            e = float(records.at[b, stat])
+        if pd.isna(records.at[c, stat]) or records.at[c, stat] == "Canceled":
             f = 0
+        else:
+            f = float(records.at[c, stat])
         summation = d + e + f
         return summation / 3
 
@@ -109,12 +117,12 @@ def create_records(team: str, year: int):
     records = pd.DataFrame()
 
     for index, game in games.iterrows():
-        if game["week_num"] != "Week" and game['week_num'] is not None and game["opp_team"] != "Bye Week" and game["date_str"] != "Playoffs":
+        if game["week_num"] != "Week" and game['week_num'] is not None and game["opp_team"] != "Bye Week" and game["date_str"] != "Playoffs" and game["team_pt"] != "Canceled":
             opp_name = convert_full_name_to_acronym(game["opp_team"])
             week_num = get_week_num(game)
             # Check if game already recorded
             if not check_game_records(opp_name, team, week_num):
-                opp_stats = load_datasheet(year, opp_name, False)
+                opp_stats = load_datasheet(year - 1, opp_name, False)
                 opp_games = load_datasheet(year, opp_name, True)
                 final = pd.DataFrame()
                 final["Week"] = [week_num]
@@ -215,4 +223,4 @@ def create_training_data(year: int):
 
 
 if __name__ == "__main__":
-    create_training_data(2024)
+    create_training_data(2022)
