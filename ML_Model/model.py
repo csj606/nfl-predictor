@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.inspection import permutation_importance
 import matplotlib.pyplot as plt
+import pickle
 
 def get_training_data():
     data_2022 = pd.read_csv("formatted_data_2022.csv")
@@ -12,7 +13,6 @@ def get_training_data():
     data_2024 = pd.read_csv("formatted_data_2024.csv")
 
     full_data = pd.concat([data_2022, data_2023, data_2024])
-    print(full_data.columns)
     y = full_data['score_diff']
     x = full_data.drop(columns=["score_diff", "Unnamed: 0"])
     return x, y
@@ -24,6 +24,11 @@ def train_model():
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
     rf = RandomForestRegressor()
     rf.fit(x_train, y_train)
+
+    filename = "nfl_model.pkl"
+    with open(filename, 'wb') as file:
+        pickle.dump(rf, file)
+    
     y_pred = rf.predict(x_test)
 
     accuracy = r2_score(y_test, y_pred)

@@ -1,8 +1,15 @@
+CREATE TYPE team_acr AS ENUM (
+    "ARI", "ATL", "BLT", "BUF", "CAR", "CHI", "CIN", "CLV", "DAL",
+    "DEN", "DET", "GB", "HST", "IND", "JAX", "KC", "LV", "LA", "MIA",
+    "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT", "SF", "SEA", "TB", 
+    "TEN", "WAS"
+)
+
 CREATE TABLE IF NOT EXISTS gen_team (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     team_name VARCHAR(255),
     region VARCHAR(255)
-)
+);
 
 CREATE TABLE IF NOT EXISTS team_stat_block (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -64,9 +71,9 @@ CREATE TABLE IF NOT EXISTS team_stat_block (
     opp_avg_num_plays_per_drive DECIMAL,
     opp_net_yards_per_drive DECIMAL,
     opp_net_points_per_drive DECIMAL
-)
+);
 
-CREATE TABLE IF NOT EXISTS games (
+CREATE TABLE IF NOT EXISTS past_games (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     home_team REFERENCES gen_team(id)
     away_team REFERENCES gen_team(id)
@@ -86,4 +93,18 @@ CREATE TABLE IF NOT EXISTS games (
     away_pass_yards INTEGER,
     away_rush_yards INTEGER,
     away_turnovers INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS upcoming_games(
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    home_team REFERENCES gen_team(id),
+    away_team REFERENCES gen_team(id),
+    game_year YEAR,
+    game_month MONTH,
+    scheduled_game_time HOUR TO MINUTE,
+);
+
+
+INSERT INTO TABLE gen_team VALUES (
+
 )
