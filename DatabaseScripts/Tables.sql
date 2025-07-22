@@ -1,6 +1,9 @@
+CREATE DATABASE nfl_app;
+USE nfl_app;
+
 CREATE TYPE team_acr AS ENUM (
     "ARI", "ATL", "BLT", "BUF", "CAR", "CHI", "CIN", "CLV", "DAL",
-    "DEN", "DET", "GB", "HST", "IND", "JAX", "KC", "LV", "LA", "MIA",
+    "DEN", "DET", "GB", "HST", "IND", "JAX", "KC", "LV", "LA", "LAC", "MIA",
     "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT", "SF", "SEA", "TB", 
     "TEN", "WAS"
 )
@@ -8,7 +11,7 @@ CREATE TYPE team_acr AS ENUM (
 CREATE TABLE IF NOT EXISTS gen_team (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     team_name VARCHAR(255),
-    region VARCHAR(255)
+    acr team_acr
 );
 
 CREATE TABLE IF NOT EXISTS team_stat_block (
@@ -101,10 +104,5 @@ CREATE TABLE IF NOT EXISTS upcoming_games(
     away_team REFERENCES gen_team(id),
     game_year YEAR,
     game_month MONTH,
-    scheduled_game_time HOUR TO MINUTE,
+    game_day DAY
 );
-
-
-INSERT INTO TABLE gen_team VALUES (
-
-)
