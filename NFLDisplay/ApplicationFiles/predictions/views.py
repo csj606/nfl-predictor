@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 def home(request):
     # TODO
-    
+
     return render(request, "predictions/home.html")
 
 

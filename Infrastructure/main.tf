@@ -9,3 +9,11 @@ module "vpc" {
 module "ec2" {
     source = "./ec2"
 }
+
+module "dynamodb" {
+    source = "./dynamodb"
+}
+
+module "s3" {
+    source = "./s3"
+}
