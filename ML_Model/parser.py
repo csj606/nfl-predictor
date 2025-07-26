@@ -8,6 +8,10 @@ team_names = ["buffalo", "49er", "eagles", "vikings", "bears", "jets", "giants",
 logged_games = {}
 
 
+def team_name_to_num(team_name) -> int:
+    return team_names.index(team_name)
+
+
 def create_files():
     for team in team_names:
         if team != "buffalo" and team != "dolphins" and team != "colts" and team != "jets" and team != "patriots" and team != "texans":
@@ -127,6 +131,10 @@ def create_records(team: str, year: int):
                 final = pd.DataFrame()
                 final["Week"] = [week_num]
 
+                # Encode who is the "team" and who is the "opponent"
+                final["Team"] = [team_names.index(team)]
+                final["Opponent"] = [team_names.index(opp_name)]
+
                 # Get Differences for Last Year Cumulative Stats
                 final["LastYrTotalYdsDif"] = [int([team_stats.at[2, "Yds"]][0]) - int([opp_stats.at[2, "Yds"]][0])]
                 final["LastYrTotalPlaysDif"] = [int([team_stats.at[2, "ply"]][0]) - int([opp_stats.at[2, "ply"]][0])]
@@ -136,7 +144,7 @@ def create_records(team: str, year: int):
                 final["LastYrPCmpDif"] = [int([team_stats.at[2, "pcmp"]][0]) - int([opp_stats.at[2, "pcmp"]][0])]
                 final["LastYrPAttDif"] = [int([team_stats.at[2, "patt"]][0]) - int([opp_stats.at[2, "patt"]][0])]
                 final["LastYrPYDsDif"] = [int([team_stats.at[2, "pyds"]][0]) - int([opp_stats.at[2, "pyds"]][0])]
-                final["LastYrPTDDif"] = [int([team_stats.at[2, "ptd"]][0]) - int([team_stats.at[2, "ptd"]][0])]
+                final["LastYrPTDDif"] = [int([team_stats.at[2, "ptd"]][0]) - int([opp_stats.at[2, "ptd"]][0])]
                 final["LastYrPIntDif"] = [int([team_stats.at[2, "pint"]][0]) - int([opp_stats.at[2, "pint"]][0])]
                 final["LastYrPNY/ADif"] = [float([team_stats.at[2, "pny/a"]][0]) - float([opp_stats.at[2, "pny/a"]][0])]
                 final["LastYrPFDDif"] = [int([team_stats.at[2, "pfd"]][0]) - int([opp_stats.at[2, "pfd"]][0])]
@@ -182,8 +190,10 @@ def create_training_data(year: int):
         data = pd.concat([data, records])
     file_name = f"formatted_data_{year}.csv"
     data.to_csv(file_name)
-    print("Done")
+    print(f"Done - created records for {year}")
 
 
 if __name__ == "__main__":
     create_training_data(2022)
+    create_training_data(2023)
+    create_training_data(2024)

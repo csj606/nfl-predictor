@@ -10,6 +10,14 @@ resource "aws_network_acl" "public"{
     tags = {
         Name = "nfl"
     }
+
+    ingress = {
+        from_port = 443
+        to_port = 443
+        rule_no = 1
+        action = "allow"
+    }
+
     subnet_ids = [aws_subnet.public_sub]
 }
 
@@ -26,7 +34,7 @@ resource "aws_subnet" "public_sub" {
     tags = {
         Name = "nfl"
     }
-    cidr_block = "172.16.2.0/8"
+    cidr_block = "172.16.2.0/24"
 }
 
 resource "aws_subnet" "private_sub"{
@@ -34,7 +42,7 @@ resource "aws_subnet" "private_sub"{
     tags = {
         Name = "nfl"
     }
-    cidr_block = "172.16.1.0/8"
+    cidr_block = "172.16.1.0/24"
 }
 
 resource "aws_internet_gateway" "gate"{
