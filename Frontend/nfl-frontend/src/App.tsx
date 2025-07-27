@@ -9,18 +9,19 @@ function gameDisplay(homeTeamName: String, homeTeamRecord: String, awayTeamName:
     <div className='weekly-game'>
       <img src="" className="teamLogo"/>
       <div className='home-team-info'>
-        <p>{homeTeamName}</p>
+        <a href="">{homeTeamName}</a>
         <p>{homeTeamRecord}</p>
       </div>
-      <img src="" className="versus"/>
+      <p className='versus'>Versus</p>
       <div className='away-team-info'>
-        <p>{awayTeamName}</p>
+        <a href="">{awayTeamName}</a>
         <p>{awayTeamRecord}</p>
       </div>
       <img src="" className="teamLogo"/>
     </div>
   )
 }
+
 
 function App() {
   const [count, setCount] = useState(0)

@@ -14,13 +14,12 @@ def team_name_to_num(team_name) -> int:
 
 def create_files():
     for team in team_names:
-        if team != "buffalo" and team != "dolphins" and team != "colts" and team != "jets" and team != "patriots" and team != "texans":
-            for year in [2022, 2023, 2024]:
-                with open(f"data/{team}_{year}_games.csv", 'w') as f:
-                    f.write("Stub")
-            for year in [2021, 2022, 2023]:
-                with open(f"data/{team}_{year}.csv", 'w') as f:
-                    f.write("Stub")
+        for year in [2019, 2018, 2017]:
+            with open(f"data/{team}_{year}_games.csv", 'w') as f:
+                f.write("Stub")
+        for year in [2018, 2017, 2016]:
+            with open(f"data/{team}_{year}.csv", 'w') as f:
+                f.write("Stub")
 
 
 def convert_full_name_to_acronym(full_name: str):
@@ -194,6 +193,4 @@ def create_training_data(year: int):
 
 
 if __name__ == "__main__":
-    create_training_data(2022)
-    create_training_data(2023)
-    create_training_data(2024)
+    create_files()
