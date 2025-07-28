@@ -23,6 +23,8 @@ def create_files():
 
 
 def convert_full_name_to_acronym(full_name: str):
+    if "Redskins" in full_name:
+        return "commanders"
     check = full_name.lower()
     for name in team_names:
         if name in check:
@@ -120,6 +122,7 @@ def create_records(team: str, year: int):
     records = pd.DataFrame()
 
     for index, game in games.iterrows():
+        print(game)
         if game["week_num"] != "Week" and game['week_num'] is not None and game["opp_team"] != "Bye Week" and game["date_str"] != "Playoffs" and game["team_pt"] != "Canceled":
             opp_name = convert_full_name_to_acronym(game["opp_team"])
             week_num = get_week_num(game)
@@ -193,4 +196,6 @@ def create_training_data(year: int):
 
 
 if __name__ == "__main__":
-    create_files()
+    create_training_data(2017)
+    create_training_data(2018)
+    create_training_data(2019)

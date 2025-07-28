@@ -15,8 +15,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "cluster" {
     ami = data.aws_ami.ubuntu.id
-    instance_type = "t3.small"
-
+    instance_type = "t4g.large"
     tags = {
         Name = "nfl"
     }

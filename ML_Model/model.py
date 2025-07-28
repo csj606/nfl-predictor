@@ -12,8 +12,11 @@ def get_training_data():
     data_2022 = pd.read_csv("formatted_data_2022.csv")
     data_2023 = pd.read_csv("formatted_data_2023.csv")
     data_2024 = pd.read_csv("formatted_data_2024.csv")
+    data_2017 = pd.read_csv("formatted_data_2017.csv")
+    data_2018 = pd.read_csv("formatted_data_2018.csv")
+    data_2019 = pd.read_csv("formatted_data_2019.csv")
 
-    full_data = pd.concat([data_2022, data_2023, data_2024])
+    full_data = pd.concat([data_2022, data_2023, data_2024, data_2019, data_2018, data_2017])
     y = full_data['score_diff']
     x = full_data.drop(columns=["score_diff", "Unnamed: 0"])
     return x, y
