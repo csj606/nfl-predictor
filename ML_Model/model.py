@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 import pickle
 
 def get_training_data():
+    """
+    Returns the training data as a pandas dataframe
+    :return: A dataframe containing the training data
+    """
     data_2022 = pd.read_csv("formatted_data_2022.csv")
     data_2023 = pd.read_csv("formatted_data_2023.csv")
     data_2024 = pd.read_csv("formatted_data_2024.csv")
@@ -23,6 +27,10 @@ def get_training_data():
 
 
 def train_model():
+    """
+    Handles the actual creation and training of the model; stores the model as a .pkl file
+    :return: None
+    """
     x, y = get_training_data()
 
     y_avg = y.mean()
