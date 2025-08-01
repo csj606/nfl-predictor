@@ -29,3 +29,10 @@ This is a list of data sources used throughout the project. I will update the li
 
 - pro-football-reference.com
 - ESPN
+
+### Repository Structure:
+- ./NFLDisplay: contains the Django backend code
+- ./Frontend: contains the React + TypeScript frontend code. This will eventually be duplicated to be served out in the ./NFLDisplay directory
+- ./ML_Model: contains all of the code and data related to the ML model powering the platform
+- ./Infrastructure: contains the Terraform scripts to deploy the relevant AWS infrastructure
+- ./DatabaseScripts: contains some SQL commands to set up an on-prem database. May remove this since I'm now more focused on the cloud deployment
