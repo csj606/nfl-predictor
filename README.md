@@ -16,7 +16,7 @@ The application will consist of five core pages
 - Frontend: TypeScript + React components
 - Backend: Django
 - Database: Amazon DynamoDB, PostgreSQL
-- CI/CD pipeline: GitHub Actions, GitHub Container Repository, Argo CD
+- CI/CD pipeline: GitHub Actions, GitHub Container Registry, Argo CD
 - Testing frameworks: PyTest and Selenium
 - ML Model: Random forest model using Scikit-Learn
 
