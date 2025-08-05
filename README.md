@@ -24,7 +24,7 @@ As the season is ongoing, the following features will be added on a rolling basi
 - ML Model: Random forest model using Scikit-Learn
 - IaC: Terraform
 
-## Infrastructure:
+### Infrastructure:
 
 - An AWS EC2 instance for the Django backend, a Redis cache, and other containerized backend services
 - An AWS S3 instance for a static frontend
