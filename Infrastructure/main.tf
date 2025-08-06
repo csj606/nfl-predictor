@@ -21,3 +21,11 @@ module "s3" {
 module "lambdas" {
     source = "./lambdas"
 }
+
+module "ecs" {
+    source = "./ecs"
+}
+
+module "eventbridge" {
+    source = "./eventbridge"
+}

@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score
-from sklearn.inspection import permutation_importance
-import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score, mean_squared_error
 import pickle
 
 def get_training_data():
@@ -43,22 +42,29 @@ def train_model():
 
     x_train, x_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.2, random_state=42)
     rf = RandomForestRegressor(n_estimators=1000, random_state=42)
+    lr = LinearRegression()
     rf.fit(x_train, y_train)
+    lr.fit(x_train, y_train)
 
     filename = "nfl_model.pkl"
     with open(filename, 'wb') as file:
         pickle.dump(rf, file)
 
     y_pred = rf.predict(x_test)
+    lr_pred = lr.predict(x_test)
 
     # Calculate R^2 value
     r2 = r2_score(y_test, y_pred)
+    r2_lr = r2_score(y_test, lr_pred)
     print(f"The model has a r2 score of {r2}")
+    print(f"The LR model has a r2 score of {r2_lr}")
 
     # Calculate mean error
     errors = abs(y_pred - y_test)
+    lr_errors = np.mean(abs(lr_pred - y_test))
     avg_error = np.mean(errors)
     print(f"The average error was {avg_error}")
+    print(f"The LR average error was {lr_errors}")
 
     # Print baseline
     base_error = np.mean(abs(y_avg - y))
@@ -68,6 +74,12 @@ def train_model():
     features = list(x.columns)
     for i in range(0, len(feature_importance)):
         print(f"{features[i]}: {feature_importance[i]}")
+
+    mse = mean_squared_error(y_test, y_pred)
+    print(f"The mean squared error equals {mse} for the model")
+
+    lr_mse = mean_squared_error(y_test, lr_pred)
+    print(f"This compares to a MSE for the LR model of {lr_mse}")
 
 
 if __name__ == "__main__":
