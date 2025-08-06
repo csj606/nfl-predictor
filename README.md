@@ -28,7 +28,7 @@ As the season is ongoing, the following features will be added on a rolling basi
 
 - An AWS EC2 instance for the Django backend, a Redis cache, and other containerized backend services
 - An AWS S3 instance for a static frontend
-- AWS Lambdas and CloudWatch events for dataflows
+- AWS Lambdas and EventBridge Scheduler for dataflows
 - Route 53 for DNS services
 - DynamoDB tables for our data
 
