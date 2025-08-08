@@ -13,10 +13,9 @@ from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest, HttpR
 
 def games(request: HttpRequest):
     season = SeasonWeeks()
-    week_num_query = season.get_week_num()
-    if week_num_query == "Table doesn't exist":
+    week_num = season.get_week_num()
+    if week_num == "Table doesn't exist":
         return HttpResponseServerError()
-    week_num = week_num_query[0]['week_num']
 
     game_schedule = UpcomingGames()
     games_query = game_schedule.get_upcoming_weekly_games(week_num)
