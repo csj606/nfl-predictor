@@ -20,23 +20,11 @@ class UpcomingGames:
     def get_upcoming_weekly_games(self, week_num):
         if self.exists():
             table = self.dynamodb.Table("upcoming_games")
-            cur_time = time.localtime().__str__()
-            results = table.query(
-                KeyConditionExpression=Key('week_num').eq(week_num) & Key("game_time").gte(cur_time)
+            results = table.get_item(
+                Key={"week_num": week_num}
             )
-            items = results["Items"]
+            items = results["Item"]["games"]
             return items
-        else:
-            return "Table doesn't exist"
-
-    def get_games_for_team(self, week_num, team_name):
-        if self.exists():
-            table = self.dynamodb.Table("upcoming_games")
-            cur_time = time.localtime().__str__()
-            results = table.query(
-                KeyConditionExpression=Key('week_num').eq(week_num) & Key("game_time").gte(cur_time),
-                FilterExpression=Attr('team_name').eq(team_name)
-            )
         else:
             return "Table doesn't exist"
 

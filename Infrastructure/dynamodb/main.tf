@@ -102,3 +102,23 @@ resource "aws_dynamodb_table" "season_weeks"{
         type = "N"
     }
 }
+
+resource "aws_dynamodb_table" "game_statistics"{
+    name = "game_statistics"
+    read_capacity = 5
+    write_capacity = 5
+    tags = {
+        name = "nfl"
+    }
+    hash_key = "team"
+
+    attribute {
+        name = "team"
+        type = "S"
+    }
+
+    attribute {
+        name = "stats"
+        type = "S"
+    }
+}

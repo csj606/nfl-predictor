@@ -20,9 +20,9 @@ class SeasonStanding:
     def get_team_standing(self, team):
         if self.exists():
             table = self.dynamodb.Table('standings')
-            results = table.query(
-                KeyConditionExpression= Key('team_name').eq(team)
+            results = table.get_item(
+                Key={"team_name": team}
             )
-            return results
+            return f"{results['Item']['wins']} - {results['Item']['defeats']}"
         else:
             return "Table doesn't exist"

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import { Link } from 'react-router-dom'
 import { team_names } from './constants'
+import 
 
 function gameDisplay(homeTeamName: String, homeTeamRecord: String, awayTeamName: String, awayTeamRecord: String){
   const homePath = `/team/${homeTeamName}`
@@ -20,11 +21,20 @@ function gameDisplay(homeTeamName: String, homeTeamRecord: String, awayTeamName:
     </div>
   )
 }
+import { getGames } from './relay_home'
 
 
 function App() {
   const [teams, setTeams] = useState(team_names)
   const [games, setGames] = useState([])
+
+  useEffect(() => {
+    async function grabGames(){
+      const thisWeeksGames = getGames()
+      setGames(thisWeeksGames)
+    }
+    grabGames()
+  })
 
   return (
     <>

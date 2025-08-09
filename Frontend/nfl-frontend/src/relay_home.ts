@@ -7,7 +7,7 @@ dotenv.config()
  * 
  * @returns {JSON} An object containing a Game object
  */
-async function getGames(){
+export async function getGames(){
     await fetch(`https://${import.meta.env.VITE_BACKEND_URL}/games`)
     .then(result => {
         if(!result.ok){

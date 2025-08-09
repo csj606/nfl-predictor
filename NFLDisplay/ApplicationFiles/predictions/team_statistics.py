@@ -18,9 +18,9 @@ class TeamStatistics:
     def get_team_stats(self, name):
         if self.exists():
             table = self.dynamodb.Table('team_statistics')
-            result = table.query(
-                KeyConditionExpression=Key('team_name').eq(name)
+            result = table.get_item(
+                Key={"team": name}
             )
-            return result
+            return result["Item"]["stats"]
         else:
             return "Table doesn't exist"

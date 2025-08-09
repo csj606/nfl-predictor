@@ -56,7 +56,7 @@ class SeasonWeeks:
             if err.response["Error"]["Code"] == "ResourceNotFoundException":
                 return False
 
-    def get_week_num(self) -> int:
+    def get_week_num(self):
         if self.exists():
             table = self.dynamodb.Table("season_weeks")
             cur_time = datetime.date.today()

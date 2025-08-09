@@ -11,7 +11,7 @@ from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest, HttpR
 
 # Create your views here.
 
-def games(request: HttpRequest):
+def games(request):
     season = SeasonWeeks()
     week_num = season.get_week_num()
     if week_num == "Table doesn't exist":
