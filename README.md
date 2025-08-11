@@ -27,7 +27,7 @@ As the season is ongoing, the following features will be added on a rolling basi
 ### Infrastructure:
 
 - An AWS EC2 instance for the Django backend, a Redis cache, and other containerized backend services
-- An AWS S3 instance for a static frontend
+- Cloudflare Pages and Workers for distributing the frontend and providing some security services
 - AWS Lambdas and EventBridge Scheduler for dataflows
 - Route 53 for DNS services
 - DynamoDB tables for our data
@@ -36,7 +36,6 @@ As the season is ongoing, the following features will be added on a rolling basi
 
 This is a list of data sources used throughout the project. I will update the list as I add more data to the models.
 
-- pro-football-reference.com
 - ESPN
 
 ### Repository Structure:
