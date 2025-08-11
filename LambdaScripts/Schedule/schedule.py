@@ -12,11 +12,11 @@ def schedule():
     data = espn_games.json()
     nfl_data = data["leagues"][0]
     regular_calendar = nfl_data["calendar"][1]
-    table = boto3.resource("dynamodb").Table('standings')
+    table = boto3.resource("dynamodb").Table('season_week')
     for week in regular_calendar:
         table.put_item(
             Item={
-                'date_range': f"{week['startDate']}{week['endDate']}",
+                'date_range': f"{week['startDate'][0:10]}{week['endDate'][0:10]}",
                 'week_num': int(week['value'])
             }
         )
