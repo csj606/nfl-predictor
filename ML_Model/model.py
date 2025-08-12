@@ -12,16 +12,14 @@ def get_training_data():
     Returns the training data as a pandas dataframe
     :return: A dataframe containing the training data
     """
-    data_2022 = pd.read_csv("formatted_data_2022.csv")
-    data_2023 = pd.read_csv("formatted_data_2023.csv")
-    data_2024 = pd.read_csv("formatted_data_2024.csv")
-    data_2017 = pd.read_csv("formatted_data_2017.csv")
-    data_2018 = pd.read_csv("formatted_data_2018.csv")
-    data_2019 = pd.read_csv("formatted_data_2019.csv")
+    data_2022 = pd.read_csv("training_data_2022.csv")
+    data_2023 = pd.read_csv("training_data_2023.csv")
+    data_2024 = pd.read_csv("training_data_2024.csv")
+    full_data = pd.concat([data_2022, data_2023, data_2024])
 
-    full_data = pd.concat([data_2022, data_2023, data_2024, data_2019, data_2018, data_2017])
     y = full_data['score_diff']
-    x = full_data.drop(columns=["score_diff", "Unnamed: 0"])
+    # This is only necessary if you are using the data included in the repo - three columns included by accident
+    x = full_data.drop(columns=["pst_fg_made_list", "pst_fg_missed_list", "pst_fg_blocked_list"])
     return x, y
 
 
