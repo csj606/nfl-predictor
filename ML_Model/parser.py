@@ -78,7 +78,7 @@ def create_training_data():
                                  "pst_pat_made","pst_pat_att","pst_pat_missed","pst_pat_blocked","pst_pat_pct","pst_gwfg_made","pst_gwfg_att"]
 
         for index, row in weekly_records.iterrows():
-            
+
 
 
 
