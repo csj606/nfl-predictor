@@ -1,11 +1,90 @@
 # This is a file for the Python scripts I used to parse and create my training data.
 import pandas as pd
 
-team_names = ["buffalo", "49er", "eagles", "vikings", "bears", "jets", "giants", "dolphins", "patriots", "steeler",
-              "browns", "bengals", "colts", "titans", "chargers", "broncos", "raiders", "commanders", "cowboys",
-              "lions", "packers", "buccaneers", "falcons", "panthers", "saints", "rams", "seahawks", "cardinals",
-              "jaguars", "texans", "chiefs", "ravens"]
+team_acronyms = ["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", ""]
 logged_games = {}
+
+
+def get_records():
+    """
+    Gets NFL-Verse data and stores it as a CSV for later use
+    :return:
+    """
+    years = [2021, 2022, 2023, 2024]
+    for year in years:
+        regular_season = pd.read_csv(
+            f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{year}.csv")
+        weekly_season = pd.read_csv(
+            f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{year}.csv")
+        regular_season.to_csv(f"annual_{year}")
+        weekly_season.to_csv(f"weekly_{year}")
+
+
+def create_training_data():
+    years = [2022, 2023, 2024]
+    for year in years:
+        annual_record = pd.read_csv(f"annual_{year - 1}.csv")
+        weekly_records = pd.read_csv(f"weekly_{year}.csv")
+        # Modify and clean data
+        weekly_records.drop(["fg_missed_list", "fg_made_list", "fg_blocked_list", "fg_made_0_19", "fg_made_20_29",
+                             "fg_missed_30_39", "fg_missed_40_49", "fg_missed_50_59", "fg_missed_60_", "fg_made_30_39",
+                             "fg_made_40_49", "fg_made_50_59", "fg_made_60_", "fg_missed_0_19", "fg_missed_20_29", "season",
+                             "season_type", "gwfg_made", "gwfg_att", "gwfg_missed", "gwfg_blocked", "gwfg_distance"])
+        annual_record.drop(["gwfg_blocked", "gwfg_distance_list", "fg_missed_list", "fg_made_list", "fg_blocked_list",
+                            "fg_missed_60_", "fg_made_60_", "games", "season"])
+        weekly_records.fillna(0)
+        annual_record.fillna(0)
+        # Create training data
+        training_data = pd.DataFrame
+        training_data.columns = ["week" ,"team","opponent_team","avg_completions","avg_attempts","avg_passing_yards",
+                                 "avg_passing_tds","avg_passing_interceptions","avg_sacks_suffered",
+                                 "avg_sack_yards_lost","avg_sack_fumbles","avg_sack_fumbles_lost",
+                                 "avg_passing_air_yards","avg_passing_yards_after_catch","avg_passing_first_downs",
+                                 "avg_passing_epa","avg_passing_cpoe","avg_passing_2pt_conversions","avg_carries",
+                                 "avg_rushing_yards","avg_rushing_tds","avg_rushing_fumbles","avg_rushing_fumbles_lost",
+                                 "avg_rushing_first_downs","avg_rushing_epa","avg_rushing_2pt_conversions",
+                                 "avg_receptions","avg_targets","avg_receiving_yards","avg_receiving_tds",
+                                 "avg_receiving_fumbles","avg_receiving_fumbles_lost","avg_receiving_air_yards",
+                                 "avg_receiving_yards_after_catch","avg_receiving_first_downs","avg_receiving_epa",
+                                 "avg_receiving_2pt_conversions","avg_special_teams_tds","avg_def_tackles_solo","avg_def_tackles_with_assist",
+                                 "avg_def_tackle_assists","avg_def_tackles_for_loss","avg_def_tackles_for_loss_yards","avg_def_fumbles_forced",
+                                 "avg_def_sacks","avg_def_sack_yards","avg_def_qb_hits","avg_def_interceptions","avg_def_interception_yards",
+                                 "avg_def_pass_defended","avg_def_tds","avg_def_fumbles","avg_def_safeties","avg_misc_yards","avg_fumble_recovery_own",
+                                 "avg_fumble_recovery_yards_own","avg_fumble_recovery_opp","avg_fumble_recovery_yards_opp",
+                                 "avg_fumble_recovery_tds","avg_penalties","avg_penalty_yards","avg_timeouts","avg_punt_returns","avg_punt_return_yards",
+                                 "avg_kickoff_returns","avg_kickoff_return_yards","avg_fg_made","avg_fg_att","avg_fg_missed","avg_fg_blocked",
+                                 "avg_fg_long","avg_fg_pct","avg_fg_made_distance","avg_fg_missed_distance","avg_fg_blocked_distance",
+                                 "avg_pat_made","avg_pat_att","avg_pat_missed","avg_pat_blocked","avg_pat_pct",
+                                 "pst_completions","pst_attempts","pst_passing_yards","pst_passing_tds","pst_passing_interceptions",
+                                 "pst_sacks_suffered","pst_sack_yards_lost","pst_sack_fumbles","pst_sack_fumbles_lost","pst_passing_air_yards",
+                                 "pst_passing_yards_after_catch","pst_passing_first_downs","pst_passing_epa","pst_passing_cpoe",
+                                 "pst_passing_2pt_conversions","pst_carries","pst_rushing_yards","pst_rushing_tds",
+                                 "pst_rushing_fumbles","pst_rushing_fumbles_lost","pst_rushing_first_downs","pst_rushing_epa",
+                                 "pst_rushing_2pt_conversions","pst_receptions","pst_targets","pst_receiving_yards","pst_receiving_tds",
+                                 "pst_receiving_fumbles","pst_receiving_fumbles_lost","pst_receiving_air_yards",
+                                 "pst_receiving_yards_after_catch","pst_receiving_first_downs","pst_receiving_epa",
+                                 "pst_receiving_2pt_conversions","pst_special_teams_tds","pst_def_tackles_solo",
+                                 "pst_def_tackles_with_assist","pst_def_tackle_assists","pst_def_tackles_for_loss",
+                                 "pst_def_tackles_for_loss_yards","pst_def_fumbles_forced","pst_def_sacks","pst_def_sack_yards",
+                                 "pst_def_qb_hits","pst_def_interceptions","pst_def_interception_yards","pst_def_pass_defended",
+                                 "pst_def_tds","pst_def_fumbles","pst_def_safeties","pst_misc_yards","pst_fumble_recovery_own",
+                                 "pst_fumble_recovery_yards_own","pst_fumble_recovery_opp","pst_fumble_recovery_yards_opp",
+                                 "pst_fumble_recovery_tds","pst_penalties","pst_penalty_yards","pst_timeouts","pst_punt_returns",
+                                 "pst_punt_return_yards","pst_kickoff_returns","pst_kickoff_return_yards","pst_fg_made","pst_fg_att",
+                                 "pst_fg_missed","pst_fg_blocked","pst_fg_long","pst_fg_pct","pst_fg_made_0_19","pst_fg_made_20_29",
+                                 "pst_fg_made_30_39","pst_fg_made_40_49","pst_fg_made_50_59","pst_fg_missed_0_19","pst_fg_missed_20_29",
+                                 "pst_fg_missed_30_39","pst_fg_missed_40_49","pst_fg_missed_50_59","pst_fg_made_list",
+                                 "pst_fg_missed_list","pst_fg_blocked_list","pst_fg_made_distance","pst_fg_missed_distance","pst_fg_blocked_distance",
+                                 "pst_pat_made","pst_pat_att","pst_pat_missed","pst_pat_blocked","pst_pat_pct","pst_gwfg_made","pst_gwfg_att"]
+
+        for index, row in weekly_records.iterrows():
+            
+
+
+
+
+
+
 
 
 def team_name_to_num(team_name: str) -> int:
@@ -14,277 +93,8 @@ def team_name_to_num(team_name: str) -> int:
     :param team_name: The name of the team, as listed in team_names
     :return: The index of the team name in the team_name list
     """
-    return team_names.index(team_name)
-
-
-def create_files():
-    """
-    Creates the CSV file stubs for the data we are cleaning
-    :return: None
-    """
-    for team in team_names:
-        for year in [2019, 2018, 2017]:
-            with open(f"data/{team}_{year}_games.csv", 'w') as f:
-                f.write("Stub")
-        for year in [2018, 2017, 2016]:
-            with open(f"data/{team}_{year}.csv", 'w') as f:
-                f.write("Stub")
-
-
-def convert_full_name_to_acronym(full_name: str):
-    """
-    Takes the team name as listed in the data and converts it to a name as listed in team_names
-    :param full_name: Team name listed in the data as a string
-    :return: The team name as listed in team_names returned as a string
-    """
-    if "Redskins" in full_name:
-        return "commanders"
-    check = full_name.lower()
-    for name in team_names:
-        if name in check:
-            return name
-
-
-def load_datasheet(year: int, team: str, are_games):
-    """
-
-    :param year: The year I want data from
-    :param team: The team I want data about. Note - the team name must be contained within team_names list
-    :param are_games: Boolean to indicate whether I want to retrieve game statistics or annual statistics
-    :return: Formatted dataframe, either containing game statistics or annual statistics
-    """
-    if are_games:
-        file_name = f"data/{team}_{year}_games.csv"
-        game_record = pd.read_csv(file_name)
-        game_record.columns = ["week_num", 'day_of_week', 'date_str', 'time', 'missing_hyperlink', 'win/lose', 'went_ot', 'team_rec',
-                               'away_stat', 'opp_team', 'team_pt', 'opp_pt', 'num_fd', 'total_yards', 'pass_yards',
-                               'rush_yards', 'turnovers', 'def_fd', 'def_tot_yds', 'def_pass_yds', 'def_rush_yds',
-                               'def_to', 'exp_points', 'def_exp_points', 'spec_exp_points']
-        return game_record
-    else:
-        file_name = f"data/{team}_{year}.csv"
-        team_record = pd.read_csv(file_name)
-        team_record.columns = ["row_names", "PF", "Yds", "ply", "y/p", "to", "fl", "fst_down", "pcmp", "patt", "pyds",
-                               "ptd", "pint", 'pny/a', 'pfd', 'ratt', 'ryds', 'rtd', 'ry/a', 'rfstd', 'pen', 'penyds', 'pen_fst_down',
-                               '#dr', 'sc%', 'TO%', 'avg_start_pos', 'avg_time_dr', 'avg_num_plys', 'avg_dr_yds',
-                               'avg_dr_pts']
-        return team_record
-
-
-def get_week_num(game) -> int:
-    """
-    Provides a number corresponding to what week in the season it is
-    :param game: A key-value list of values corresponding to a game record
-    :return: The numeric representation of what week the season is in
-    """
-    if game["week_num"] == "Wild Card":
-        return 19
-    elif game["week_num"] == "Division":
-        return 20
-    elif game["week_num"] == "Conf. Champ.":
-        return 21
-    elif game["week_num"] == "SuperBowl":
-        return 22
-    else:
-        return game["week_num"]
-
-
-def log_game_record(opp: str, team: str, week_num: int, year: int):
-    """
-    Adds a key value pair to logged_games to keep track of what games we've seen
-    :param opp: The name of the opponent
-    :param team: The name of the team we are recording results of
-    :param week_num: The week in the NFL season
-    :param year: The year of the record
-    :return: None
-    """
-    concat_str = opp + team + str(week_num) + str(year)
-    logged_games[concat_str] = 1
-
-
-def check_game_records(opp: str, team: str, week_num: int, year: int) -> bool:
-    """
-    Checks to see if we've recorded this game before
-    :param year: The year of the record
-    :param opp: The name of the opponenet
-    :param team: The name of the team we are currently recording data for
-    :param week_num: The current week in the season
-    :return: Returns true if we've seen this game, false otherwise
-    """
-    concat_str = team + opp + str(week_num) + str(year)
-    if logged_games.get(concat_str) is not None:
-        return True
-    else:
-        return False
-
-
-def clean_cell(stat:str, index, records) -> float:
-    """
-    Hands some data formatting issue - canceled weeks, missing values, etc. by returning 0. Otherwise returns the value
-    :param stat: Statistic we are trying to retrieve
-    :param index: The
-    :param records:
-    :return:
-    """
-    if pd.isna(records.at[index, stat]) or records.at[1, stat] == "Canceled":
-        return 0
-    else:
-        return float(records.at[index, stat])
-
-
-def get_rolling_five_week_avg(stat: str, index, records) -> float:
-    """
-    Calculates the five-week rolling average for a statistic from a specific week
-    :param stat: The statistic we are calculating the rolling average for
-    :param index: The week we are currently looking at
-    :param records: The game statistics for a year
-    :return: The average for that statistic as a float
-    """
-    a, b, c, d, e = 0, 0, 0, 0, 0  # These are the indexes of the records we are going to iterate through
-    summation = 0
-
-    if index < len(records):
-        a, b, c, d, e = index - 1, index - 2, index - 3, index - 4, index - 5 # Index is a hashable, so this is the easiest way to do this, albeit difficult to understand
-    else:
-        a, b, c, d, e = index - 2, index - 3, index - 4, index - 5, index - 6
-
-    if a > 0:
-        summation += clean_cell(stat, a, records)
-    if b > 0:
-        summation += clean_cell(stat, b, records)
-    if c > 0:
-        summation += clean_cell(stat, c, records)
-    if d > 0:
-        summation += clean_cell(stat, d, records)
-    if e > 0:
-        summation += clean_cell(stat, e, records)
-    return summation / 5
-
-
-def get_rolling_three_week_avg(stat: str, index, records) -> float:
-    """
-    Calculates the three-week rolling average for a statistic from a specific week
-    :param stat: The statistic we are calculating the rolling average for
-    :param index: The week we are currently looking at
-    :param records: The game statistics for a year
-    :return: The average for that statistic as a float
-    """
-    if index == 1:
-        return 0
-    elif index == 2:
-        return clean_cell(stat, index - 1, records)
-    elif index == 3:
-        first_result = clean_cell(stat, 1, records)
-        second_result = clean_cell(stat, 2, records)
-        summation = first_result + second_result
-        return summation / 2
-    else:
-        if index < len(records):
-            first_index, second_index, third_index = index - 1, index - 2, index - 3
-        else:
-            first_index, second_index, third_index = index - 2, index - 3, index - 4
-        first_stat = clean_cell(stat, first_index, records)
-        second_stat = clean_cell(stat, second_index, records)
-        third_stat = clean_cell(stat, third_index, records)
-        summation = first_stat + second_stat + third_stat
-        return summation / 3
-
-
-def create_records(team: str, year: int):
-    """
-    Creates training records for a specific team in a specific year
-    :param team: The team we are creating records for
-    :param year: The year we are creating records for
-    :return: A dataframe containing the formatted training data
-    """
-    games = load_datasheet(year, team, True)
-    team_stats = load_datasheet(year - 1, team, False)  # Want to load the last year for team stats
-
-    records = pd.DataFrame()
-
-    for index, game in games.iterrows():
-        print(game)
-        if game["week_num"] != "Week" and game['week_num'] is not None and game["opp_team"] != "Bye Week" and game["date_str"] != "Playoffs" and game["team_pt"] != "Canceled":
-            opp_name = convert_full_name_to_acronym(game["opp_team"])
-            week_num = get_week_num(game)
-            # Check if game already recorded
-            if not check_game_records(opp_name, team, week_num, year):
-                opp_stats = load_datasheet(year - 1, opp_name, False)
-                opp_games = load_datasheet(year, opp_name, True)
-                final = pd.DataFrame()
-                final["Week"] = [week_num]
-
-                # Encode who is the "team" and who is the "opponent"
-                final["Team"] = [team_names.index(team)]
-                final["Opponent"] = [team_names.index(opp_name)]
-
-                # Get Differences for Last Year Cumulative Stats
-                final["LastYrTotalYdsDif"] = [int([team_stats.at[2, "Yds"]][0]) - int([opp_stats.at[2, "Yds"]][0])]
-                final["LastYrTotalPlaysDif"] = [int([team_stats.at[2, "ply"]][0]) - int([opp_stats.at[2, "ply"]][0])]
-                final["LastYrY/PDif"] = [float([team_stats.at[2, "y/p"]][0]) - float([opp_stats.at[2, "y/p"]][0])]
-                final["LastYrTODif"] = [int([team_stats.at[2, "to"]][0]) - int([opp_stats.at[2, "to"]][0])]
-                final["LastYr1stDsDif"] = [int([team_stats.at[2, "fst_down"]][0]) - int([opp_stats.at[2, "fst_down"]][0])]
-                final["LastYrPCmpDif"] = [int([team_stats.at[2, "pcmp"]][0]) - int([opp_stats.at[2, "pcmp"]][0])]
-                final["LastYrPAttDif"] = [int([team_stats.at[2, "patt"]][0]) - int([opp_stats.at[2, "patt"]][0])]
-                final["LastYrPYDsDif"] = [int([team_stats.at[2, "pyds"]][0]) - int([opp_stats.at[2, "pyds"]][0])]
-                final["LastYrPTDDif"] = [int([team_stats.at[2, "ptd"]][0]) - int([opp_stats.at[2, "ptd"]][0])]
-                final["LastYrPIntDif"] = [int([team_stats.at[2, "pint"]][0]) - int([opp_stats.at[2, "pint"]][0])]
-                final["LastYrPNY/ADif"] = [float([team_stats.at[2, "pny/a"]][0]) - float([opp_stats.at[2, "pny/a"]][0])]
-                final["LastYrPFDDif"] = [int([team_stats.at[2, "pfd"]][0]) - int([opp_stats.at[2, "pfd"]][0])]
-                final["LastYrRAttDif"] = [int([team_stats.at[2, "ratt"]][0]) - int([opp_stats.at[2, "ratt"]][0])]
-                final["LastYrRYDsDif"] = [int([team_stats.at[2, "ryds"]][0]) - int([opp_stats.at[2, "ryds"]][0])]
-                final["LastYrRTDsDif"] = [int([team_stats.at[2, "rtd"]][0]) - int([opp_stats.at[2, "rtd"]][0])]
-                final["LastYrRY/ADif"] = [float([team_stats.at[2, "ry/a"]][0]) - float([opp_stats.at[2, "ry/a"]][0])]
-                final["LastYrR1stDDif"] = [int([team_stats.at[2, "rfstd"]][0]) - int([opp_stats.at[2, "rfstd"]][0])]
-                final["LastYrPenDif"] = [int([team_stats.at[2, "pen"]][0]) - int([opp_stats.at[2, "pen"]][0])]
-                final["LastYrSc%Dif"] = [float([team_stats.at[2, "sc%"]][0]) - float([opp_stats.at[2, "sc%"]][0])]
-                final["LastYrTO%Dif"] = [float([team_stats.at[2, "TO%"]][0]) - float([opp_stats.at[2, "TO%"]][0])]
-                final["LastYrAvgPlyDif"] = [float([team_stats.at[2, "avg_num_plys"]][0]) - float([opp_stats.at[2, "avg_num_plys"]][0])]
-                final["LastYrAvgDrYdsDif"] = [float([team_stats.at[2, "avg_dr_yds"]][0]) - float([opp_stats.at[2, "avg_dr_yds"]][0])]
-                final["LastYrAvgDrPtsDif"] = [float([team_stats.at[2, "avg_dr_pts"]][0])- float([opp_stats.at[2, "avg_dr_pts"]][0])]
-
-                # Create three week rolling average differences for teams
-                final["MA3Off1stDDif"] = [float(get_rolling_three_week_avg('num_fd', index, games)) - float(get_rolling_three_week_avg('num_fd', index, opp_games))]
-                final["MA3OffTotYdsDif"] = [float(get_rolling_three_week_avg('total_yards', index, games)) - float(get_rolling_three_week_avg('total_yards', index, opp_games))]
-                final["MA3OffPYDSDif"] = [float(get_rolling_three_week_avg('pass_yards', index, games)) - float(get_rolling_three_week_avg('pass_yards', index, opp_games))]
-                final["MA3OffRYDSDif"] = [float(get_rolling_three_week_avg('rush_yards', index, games)) - float(get_rolling_three_week_avg('rush_yards', index, opp_games))]
-                final["MA3OffTOsDif"] = [float(get_rolling_three_week_avg('turnovers', index, games)) - float(get_rolling_three_week_avg('turnovers', index, opp_games))]
-                final["MA3Def1stDDif"] = [float(get_rolling_three_week_avg('def_fd', index, games)) - float(get_rolling_three_week_avg('def_fd', index, opp_games))]
-                final["MA3DefTotYdsDif"] = [float(get_rolling_three_week_avg('def_tot_yds', index, games)) - float(get_rolling_three_week_avg('def_tot_yds', index, opp_games))]
-                final["MA3DefPYDSDif"] = [float(get_rolling_three_week_avg('def_pass_yds', index, games)) - float(get_rolling_three_week_avg('def_pass_yds', index, opp_games))]
-                final["MA3DefRYDSDif"] = [float(get_rolling_three_week_avg('def_rush_yds', index, games)) - float(get_rolling_three_week_avg('def_rush_yds', index, opp_games))]
-                final["MA3DefTOsDif"] = [float(get_rolling_three_week_avg('def_to', index, games)) - float(get_rolling_three_week_avg('def_to', index, opp_games))]
-
-                # Create five week rolling average differences for teams
-                final["MA5Off1stDDiff"] = [float(get_rolling_five_week_avg('num_fd', index, games)) - float(get_rolling_five_week_avg('num_fd', index, opp_games))]
-
-                # Create "spread" for prediction
-                final["score_diff"] = [int(game["team_pt"]) - int(game["opp_pt"])]
-
-                # Log game to prevent duplicates
-                log_game_record(opp_name, team, week_num, year)
-
-                # Combine new record with records table
-                records = pd.concat([records, final])
-    return records
-
-
-def create_training_data(year: int):
-    """
-    Creates a CSV containing training data for a specific year
-    :param year: the year we are creating data for
-    :return: None
-    """
-    data = pd.DataFrame()
-    for team in team_names:
-        records = create_records(team, year)
-        data = pd.concat([data, records])
-    file_name = f"formatted_data_{year}.csv"
-    data.to_csv(file_name)
-    print(f"Done - created records for {year}")
+    return team_acronyms.index(team_name)
 
 
 if __name__ == "__main__":
-    create_training_data(2017)
-    create_training_data(2018)
-    create_training_data(2019)
+    get_records()
