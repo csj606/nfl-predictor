@@ -18,8 +18,8 @@ def get_training_data():
     full_data = pd.concat([data_2022, data_2023, data_2024])
 
     y = full_data['score_diff']
-    # This is only necessary if you are using the data included in the repo - three columns included by accident
-    x = full_data.drop(columns=["pst_fg_made_list", "pst_fg_missed_list", "pst_fg_blocked_list"])
+    x = full_data.drop(columns=["score_diff", "pst_fg_missed_0_19", "pst_fg_made_0_19", "pst_fg_missed_20_29", "avg_fg_blocked",
+                                "avg_special_teams_tds", "pst_fg_blocked", "pst_gwfg_made"])
     return x, y
 
 
@@ -29,6 +29,7 @@ def train_model():
     :return: None
     """
     x, y = get_training_data()
+    x = x.fillna(0)
 
     y_avg = y.mean()
 
@@ -39,7 +40,7 @@ def train_model():
     x_arr = np.array(x)
 
     x_train, x_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.2, random_state=42)
-    rf = RandomForestRegressor(n_estimators=1000, random_state=42)
+    rf = RandomForestRegressor(random_state=42)
     lr = LinearRegression()
     rf.fit(x_train, y_train)
     lr.fit(x_train, y_train)
@@ -70,8 +71,14 @@ def train_model():
 
     feature_importance = list(rf.feature_importances_)
     features = list(x.columns)
+    imp_sorted = {}
     for i in range(0, len(feature_importance)):
-        print(f"{features[i]}: {feature_importance[i]}")
+        imp_sorted[feature_importance[i]] = features[i]
+
+    results = list(imp_sorted.keys())
+    results.sort()
+    for r in results:
+        print(f"{imp_sorted[r]} - {r}")
 
     mse = mean_squared_error(y_test, y_pred)
     print(f"The mean squared error equals {mse} for the model")

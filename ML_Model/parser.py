@@ -459,7 +459,7 @@ def create_training_data():
                 pst_fg_blocked_distance,
                 pst_pat_made, pst_pat_att, pst_pat_missed, pst_pat_blocked, pst_pat_pct, pst_gwfg_made, pst_gwfg_att
             ]
-        training_data.to_csv(f"training_data_{year}.csv")
+        training_data.to_csv(f"training_data_{year}.csv", index=False)
 
 
 def get_rolling_avg(statistic: str, dataframe: DataFrame, end_week, select_team):
@@ -481,10 +481,29 @@ def get_last_years_stat(statistic: str, dataframe: DataFrame, select_team):
 def team_name_to_num(team_name: str) -> int:
     """
     Returns the team name as an integer - used for specific features in the model
-    :param team_name: The name of the team, as listed in team_names
+    :param team_name: The name of the team, as listed in team_acronyms
     :return: The index of the team name in the team_name list
     """
     return team_acronyms.index(team_name)
+
+
+def num_to_team_name(team_name: int) -> str:
+    return team_acronyms[team_name]
+
+
+def add_dependent_variable():
+    years = [2023, 2024]
+    for year in years:
+        training_data = pd.read_csv(f"training_data_{year}.csv")
+        scores = pd.read_csv("nfl_scores.csv")
+        training_data["score_diff"] = 0
+        for index, row in training_data.iterrows():
+            team = num_to_team_name(int(row["team"]))
+            week = int(row["week"])
+            query_results = scores.query("(season==@year) and (week_num==@week) and ((Home==@team) or (Away==@team))")
+            query_results = query_results.reset_index(drop=True)
+            training_data.loc[index, "score_diff"] = query_results.loc[0, "score_diff"]
+        training_data.to_csv(f"training_data_{year}.csv", index=False)
 
 
 if __name__ == "__main__":
