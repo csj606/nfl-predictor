@@ -1,6 +1,6 @@
 # This is a file for the Python scripts I used to parse and create my training data.
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 team_acronyms = ["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX",
                  "KC", "LA", "LAC", "LV", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB",
@@ -466,9 +466,11 @@ def get_rolling_avg(statistic: str, dataframe: DataFrame, end_week, select_team)
     begin_week = end_week - 3
     selected_games = dataframe.query("@begin_week <= week < @end_week and team == @select_team")
     summation = 0
+    items = 0
     for index, row in selected_games.iterrows():
         summation += row[statistic]
-    return summation / 3
+        items += 1
+    return summation / items
 
 
 def get_last_years_stat(statistic: str, dataframe: DataFrame, select_team):
@@ -506,5 +508,22 @@ def add_dependent_variable():
         training_data.to_csv(f"training_data_{year}.csv", index=False)
 
 
+def difference_records():
+    years = [2022, 2023]
+    for year in years:
+        training_data = pd.read_csv(f"training_data_{year}.csv")
+        for index, row in training_data.iterrows():
+            team = row["team"]
+            week = int(row["week"])
+            exclude = ["team", "week", "opponent_team", "score_diff"]
+            query_results = training_data.query("(opponent_team==@team) and (week==@week)").reset_index(drop=True)
+            second_row: Series = query_results.iloc[0]
+            for col in training_data.columns:
+                if col not in exclude:
+                    row[col] -= second_row[col]
+            training_data.iloc[index] = row
+        training_data.to_csv(f"training_data_{year}.csv",index=False)
+
+
 if __name__ == "__main__":
-    create_training_data()
+    difference_records()

@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 import pickle
+import matplotlib.pyplot as plt
+
 
 def get_training_data():
     """
@@ -16,10 +18,27 @@ def get_training_data():
     data_2023 = pd.read_csv("training_data_2023.csv")
     data_2024 = pd.read_csv("training_data_2024.csv")
     full_data = pd.concat([data_2022, data_2023, data_2024])
+    # full_data.to_csv("full_data.csv", index=False)
 
     y = full_data['score_diff']
-    x = full_data.drop(columns=["score_diff", "pst_fg_missed_0_19", "pst_fg_made_0_19", "pst_fg_missed_20_29", "avg_fg_blocked",
-                                "avg_special_teams_tds", "pst_fg_blocked", "pst_gwfg_made"])
+    columns_to_drop = ["score_diff", "avg_receptions", "avg_targets", "avg_receiving_yards", "avg_receiving_tds",
+                       "avg_receiving_first_downs", "pst_fg_missed_0_19", "avg_completions", "avg_attempts",
+                       "avg_passing_first_downs", "avg_sack_yards_lost", "avg_rushing_first_downs", "avg_carries",
+                       "pst_receptions", "pst_targets", "pst_receiving_yards", "pst_receiving_tds",
+                       "pst_receiving_first_downs", "pst_fg_missed_0_19", "pst_completions", "pst_attempts",
+                       "pst_passing_first_downs", "pst_sack_yards_lost", "pst_rushing_first_downs",
+                       "pst_carries", "avg_fumble_recovery_yards_opp", "pst_fumble_recovery_yards_opp",
+                       "avg_fumble_recovery_yards_own", "pst_fumble_recovery_yards_own", "avg_penalty_yards",
+                       "pst_penalty_yards", "avg_def_sack_yards", "pst_def_sack_yards",
+                       "avg_def_tackles_for_loss_yards", "pst_def_tackles_for_loss_yards", "avg_receiving_epa",
+                       "pst_receiving_epa", "avg_receiving_2pt_conversions", "pst_receiving_2pt_conversions",
+                       "avg_passing_yards_after_catch", "pst_passing_yards_after_catch", "avg_receiving_yards_after_catch",
+                       "pst_receiving_yards_after_catch", "avg_receiving_air_yards", "pst_receiving_air_yards",
+                       "avg_kickoff_return_yards", "pst_kickoff_return_yards", "pst_fg_made_distance", "avg_fg_made_distance",
+                       "avg_fg_att", "pst_fg_att", "avg_fg_missed_distance", "pst_fg_missed_distance", "avg_fg_blocked_distance",
+                       "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att"
+                       ]
+    x = full_data.drop(columns=columns_to_drop)
     return x, y
 
 
@@ -31,6 +50,8 @@ def train_model():
     x, y = get_training_data()
     x = x.fillna(0)
 
+    # x.corr(method="pearson").to_csv("correlations.csv")
+
     y_avg = y.mean()
 
     # dependent_descrip = x.describe()
@@ -39,11 +60,16 @@ def train_model():
     y_arr = np.array(y)
     x_arr = np.array(x)
 
+    indexes = np.array(range(len(y_arr)))
+    plt.scatter(x=indexes, y=y_arr)
+
     x_train, x_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.2, random_state=42)
     rf = RandomForestRegressor(random_state=42)
     lr = LinearRegression()
+    lasso = Lasso(alpha=0.2)
     rf.fit(x_train, y_train)
     lr.fit(x_train, y_train)
+    lasso.fit(x_train, y_train)
 
     filename = "nfl_model.pkl"
     with open(filename, 'wb') as file:
@@ -51,19 +77,24 @@ def train_model():
 
     y_pred = rf.predict(x_test)
     lr_pred = lr.predict(x_test)
+    lasso_pred = lasso.predict(x_test)
 
     # Calculate R^2 value
     r2 = r2_score(y_test, y_pred)
     r2_lr = r2_score(y_test, lr_pred)
+    r2_lasso = r2_score(y_test, lasso_pred)
     print(f"The model has a r2 score of {r2}")
     print(f"The LR model has a r2 score of {r2_lr}")
+    print(f"The lasso model has a r2 score of {r2_lasso}")
 
     # Calculate mean error
     errors = abs(y_pred - y_test)
     lr_errors = np.mean(abs(lr_pred - y_test))
+    lasso_errors = np.mean(abs(lasso_pred- y_test))
     avg_error = np.mean(errors)
     print(f"The average error was {avg_error}")
     print(f"The LR average error was {lr_errors}")
+    print(f"The lasso average error was {lasso_errors}")
 
     # Print baseline
     base_error = np.mean(abs(y_avg - y))
@@ -85,6 +116,9 @@ def train_model():
 
     lr_mse = mean_squared_error(y_test, lr_pred)
     print(f"This compares to a MSE for the LR model of {lr_mse}")
+
+    lasso_mse = mean_squared_error(y_test, lasso_pred)
+    print(f"And the lasso's MSE of {lasso_mse}")
 
 
 if __name__ == "__main__":
