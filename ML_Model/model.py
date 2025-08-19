@@ -14,10 +14,12 @@ def get_training_data():
     Returns the training data as a pandas dataframe
     :return: A dataframe containing the training data
     """
+    data_2018 = pd.read_csv("training_data_2018.csv")
+    data_2019 = pd.read_csv("training_data_2019.csv")
     data_2022 = pd.read_csv("training_data_2022.csv")
     data_2023 = pd.read_csv("training_data_2023.csv")
     data_2024 = pd.read_csv("training_data_2024.csv")
-    full_data = pd.concat([data_2022, data_2023, data_2024])
+    full_data = pd.concat([data_2018, data_2019, data_2022, data_2023, data_2024])
 
     columns_to_drop = ["avg_receptions", "avg_targets", "avg_receiving_yards", "avg_receiving_tds",
                        "avg_receiving_first_downs", "pst_fg_missed_0_19", "avg_completions", "avg_attempts",
@@ -35,10 +37,11 @@ def get_training_data():
                        "avg_kickoff_return_yards", "pst_kickoff_return_yards", "pst_fg_made_distance", "avg_fg_made_distance",
                        "avg_fg_att", "pst_fg_att", "avg_fg_missed_distance", "pst_fg_missed_distance", "avg_fg_blocked_distance",
                        "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att", "avg_fg_long", "avg_fg_pct",
-                       "avg_pat_pct"]
+                       "avg_pat_pct", "avg_def_fumbles", "pst_def_fumbles"]
     full_data = full_data.drop(columns=columns_to_drop)
-    # full_data.to_csv("full_data.csv", index=False)
-    print(len(full_data))
+    full_data.to_csv("full_data.csv", index=False)
+    columns_with_nan = full_data.columns[full_data.isna().any()].tolist()
+    print(columns_with_nan)
     y = full_data['score_diff']
     x = full_data.drop(columns=["score_diff"])
     return x, y
@@ -112,7 +115,7 @@ def train_model():
     print(f"The lasso average error was {lasso_errors}")
 
     # Print baseline
-    base_error = np.mean(abs(y_avg - y))
+    base_error = np.mean(abs(y_avg - y_test))
     print(f"This compares to a base error of {base_error}")
 
     feature_importance = list(rf.feature_importances_)

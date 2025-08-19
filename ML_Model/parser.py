@@ -13,18 +13,18 @@ def get_records():
     Gets NFL-Verse data and stores it as a CSV for later use
     :return:
     """
-    years = [2021, 2022, 2023, 2024]
+    years = [2018, 2019]
     for year in years:
         regular_season = pd.read_csv(
-            f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{year}.csv")
+            f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{year - 1}.csv")
         weekly_season = pd.read_csv(
             f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{year}.csv")
-        regular_season.to_csv(f"annual_{year}")
-        weekly_season.to_csv(f"weekly_{year}")
+        regular_season.to_csv(f"annual_{year - 1}.csv")
+        weekly_season.to_csv(f"weekly_{year}.csv")
 
 
 def create_training_data():
-    years = [2022, 2023, 2024]
+    years = [2018, 2019]
     for year in years:
         annual_record = pd.read_csv(f"annual_{year - 1}.csv")
         weekly_records = pd.read_csv(f"weekly_{year}.csv")
@@ -470,6 +470,8 @@ def get_rolling_avg(statistic: str, dataframe: DataFrame, end_week, select_team)
     for index, row in selected_games.iterrows():
         summation += row[statistic]
         items += 1
+    if items == 0:
+        return 0
     return summation / items
 
 
@@ -494,7 +496,7 @@ def num_to_team_name(team_name: int) -> str:
 
 
 def add_dependent_variable():
-    years = [2023, 2024]
+    years = [2018, 2019]
     for year in years:
         training_data = pd.read_csv(f"training_data_{year}.csv")
         scores = pd.read_csv("nfl_scores.csv")
@@ -504,12 +506,15 @@ def add_dependent_variable():
             week = int(row["week"])
             query_results = scores.query("(season==@year) and (week_num==@week) and ((Home==@team) or (Away==@team))")
             query_results = query_results.reset_index(drop=True)
-            training_data.loc[index, "score_diff"] = query_results.loc[0, "score_diff"]
+            if query_results.loc[0, "Home"] == team:
+                training_data.loc[index, "score_diff"] = query_results.loc[0, "score_diff"]
+            else:
+                training_data.loc[index, "score_diff"] = query_results.loc[0, "score_diff"] * -1
         training_data.to_csv(f"training_data_{year}.csv", index=False)
 
 
 def difference_records():
-    years = [2022, 2023]
+    years = [2018, 2019]
     for year in years:
         training_data = pd.read_csv(f"training_data_{year}.csv")
         for index, row in training_data.iterrows():
@@ -526,4 +531,11 @@ def difference_records():
 
 
 if __name__ == "__main__":
+    get_records()
+    print("Created records")
+    create_training_data()
+    print("Made training data")
+    add_dependent_variable()
+    print("Added scores to new training data")
     difference_records()
+    print("Subtracted records")
