@@ -18,10 +18,8 @@ def get_training_data():
     data_2023 = pd.read_csv("training_data_2023.csv")
     data_2024 = pd.read_csv("training_data_2024.csv")
     full_data = pd.concat([data_2022, data_2023, data_2024])
-    # full_data.to_csv("full_data.csv", index=False)
 
-    y = full_data['score_diff']
-    columns_to_drop = ["score_diff", "avg_receptions", "avg_targets", "avg_receiving_yards", "avg_receiving_tds",
+    columns_to_drop = ["avg_receptions", "avg_targets", "avg_receiving_yards", "avg_receiving_tds",
                        "avg_receiving_first_downs", "pst_fg_missed_0_19", "avg_completions", "avg_attempts",
                        "avg_passing_first_downs", "avg_sack_yards_lost", "avg_rushing_first_downs", "avg_carries",
                        "pst_receptions", "pst_targets", "pst_receiving_yards", "pst_receiving_tds",
@@ -36,9 +34,13 @@ def get_training_data():
                        "pst_receiving_yards_after_catch", "avg_receiving_air_yards", "pst_receiving_air_yards",
                        "avg_kickoff_return_yards", "pst_kickoff_return_yards", "pst_fg_made_distance", "avg_fg_made_distance",
                        "avg_fg_att", "pst_fg_att", "avg_fg_missed_distance", "pst_fg_missed_distance", "avg_fg_blocked_distance",
-                       "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att"
-                       ]
-    x = full_data.drop(columns=columns_to_drop)
+                       "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att", "avg_fg_long", "avg_fg_pct",
+                       "avg_pat_pct"]
+    full_data = full_data.drop(columns=columns_to_drop)
+    # full_data.to_csv("full_data.csv", index=False)
+    print(len(full_data))
+    y = full_data['score_diff']
+    x = full_data.drop(columns=["score_diff"])
     return x, y
 
 
@@ -48,7 +50,6 @@ def train_model():
     :return: None
     """
     x, y = get_training_data()
-    x = x.fillna(0)
 
     # x.corr(method="pearson").to_csv("correlations.csv")
 
@@ -78,6 +79,20 @@ def train_model():
     y_pred = rf.predict(x_test)
     lr_pred = lr.predict(x_test)
     lasso_pred = lasso.predict(x_test)
+
+    # Calculate R^2 training values?
+    yt_pred = rf.predict(x_train)
+    r2t_rf = r2_score(y_train, yt_pred)
+
+    lrt_pred = lr.predict(x_train)
+    r2t_lr = r2_score(y_train, lrt_pred)
+
+    lassot_pred = lasso.predict(x_train)
+    r2t_lasso = r2_score(y_train, lassot_pred)
+
+    print(f"The model has a training r2 score of {r2t_rf}")
+    print(f"The LR model has a training r2 score of {r2t_lr}")
+    print(f"The lasso model has a training r2 score of {r2t_lasso}")
 
     # Calculate R^2 value
     r2 = r2_score(y_test, y_pred)
