@@ -8,12 +8,6 @@ Currently, the following pages are being included as a MVP prior to the start of
 - A home page where the games currently being played this week are displayed, along with the predicted score
 - A page where a user can search for specific teams and view details about them
 
-As the season is ongoing, the following features will be added on a rolling basis:
-
-- A page where a user can make their own predictions against the model and their friends
-- A page where a user can see overall global rankings of an individual
-- A page where a user can manage and invite people into their fantasy football leagues
-
 ### Stack:
 
 - Frontend: TypeScript + React components
