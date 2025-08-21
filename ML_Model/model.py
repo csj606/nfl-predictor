@@ -32,14 +32,27 @@ def get_training_data():
                        "pst_penalty_yards", "avg_def_sack_yards", "pst_def_sack_yards",
                        "avg_def_tackles_for_loss_yards", "pst_def_tackles_for_loss_yards", "avg_receiving_epa",
                        "pst_receiving_epa", "avg_receiving_2pt_conversions", "pst_receiving_2pt_conversions",
-                       "avg_passing_yards_after_catch", "pst_passing_yards_after_catch", "avg_receiving_yards_after_catch",
+                       "avg_passing_yards_after_catch", "pst_passing_yards_after_catch",
+                       "avg_receiving_yards_after_catch",
                        "pst_receiving_yards_after_catch", "avg_receiving_air_yards", "pst_receiving_air_yards",
-                       "avg_kickoff_return_yards", "pst_kickoff_return_yards", "pst_fg_made_distance", "avg_fg_made_distance",
-                       "avg_fg_att", "pst_fg_att", "avg_fg_missed_distance", "pst_fg_missed_distance", "avg_fg_blocked_distance",
-                       "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att", "avg_fg_long", "avg_fg_pct",
+                       "avg_kickoff_return_yards", "pst_kickoff_return_yards", "pst_fg_made_distance",
+                       "avg_fg_made_distance",
+                       "avg_fg_att", "pst_fg_att", "avg_fg_missed_distance", "pst_fg_missed_distance",
+                       "avg_fg_blocked_distance",
+                       "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att", "avg_fg_long",
+                       "avg_fg_pct",
                        "avg_pat_pct", "avg_def_fumbles", "pst_def_fumbles"]
     full_data = full_data.drop(columns=columns_to_drop)
-    # full_data.to_csv("full_data.csv", index=False)
+
+    lasso_vars = ["team", "opponent_team", "avg_passing_tds", "avg_passing_interceptions", "avg_sack_fumbles",
+                  "avg_sack_fumbles_lost", "avg_passing_2pt_conversions","avg_rushing_tds", "avg_rushing_fumbles",
+                  "avg_rushing_fumbles_lost", "avg_rushing_2pt_conversions", "avg_special_teams_tds", "avg_def_sacks",
+                  "avg_def_pass_defended", "avg_def_tds", "avg_def_safeties", "avg_fumble_recovery_own", "avg_fumble_recovery_tds",
+                  "avg_timeouts", "avg_fg_missed", "avg_pat_made", "avg_pat_missed", "avg_pat_blocked",
+                  "pst_sack_fumbles_lost", "pst_receiving_fumbles_lost", "pst_fg_pct", "pst_fg_made_50_59",
+                  "pst_fg_missed_20_29", "pst_fg_missed_40_49", "pst_fg_missed_50_59", "pst_pat_pct"]
+    full_data = full_data.drop(columns=lasso_vars)
+    full_data.to_csv("full_data.csv", index=False)
     # columns_with_nan = full_data.columns[full_data.isna().any()].tolist()
     # print(columns_with_nan)
     y = full_data['score_diff']
@@ -105,7 +118,7 @@ def train_model():
     # Calculate mean error
     errors = abs(y_pred - y_test)
     # lr_errors = np.mean(abs(lr_pred - y_test))
-    lasso_errors = np.mean(abs(lasso_pred- y_test))
+    lasso_errors = np.mean(abs(lasso_pred - y_test))
     avg_error = np.mean(errors)
     print(f"The average error was {avg_error}")
     # print(f"The LR average error was {lr_errors}")

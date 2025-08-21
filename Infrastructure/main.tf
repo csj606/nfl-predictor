@@ -1,31 +1,32 @@
-provider "aws" {
-    region = "us-east-1"
-}
-
 module "vpc" {
-    source = "./vpc"
+    source = "./modules/vpc"
 }
 
-module "ec2" {
-    source = "./ec2"
-}
-
-module "dynamodb" {
-    source = "./dynamodb"
-}
-
-module "s3" {
-    source = "./s3"
-}
-
-module "lambdas" {
-    source = "./lambdas"
+module "annual_stat_caller" {
+    source = "./modules/annual_stat_caller"
 }
 
 module "ecs" {
-    source = "./ecs"
+    source = "./module/ecs"
 }
 
-module "eventbridge" {
-    source = "./eventbridge"
+module "season_weeks" {
+    source = "./modules/season_weeks"
+    season_weeks_arn = module.dynamodb.season_weeks_table_arn
+}
+
+module "week_updates" {
+    source = "./modules/week_updates"
+}
+
+module "dynamodb" {
+    source = "./modules/dynamodb"
+}
+
+module "predictor" {
+    source = "./modules/predictor"
+}
+
+module "eventbridge"{
+    source = "./modules/eventbridge"
 }
