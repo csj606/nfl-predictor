@@ -16,6 +16,4 @@ def weekly_games():
     for game in games:
         home_team = game["competitions"][0]["competitors"][0]["abbreviation"]
         oppo_team = game["competitions"][0]["competitors"][1]["abbreviation"]
-
-
-    table.put_item()
+        table.put_item()

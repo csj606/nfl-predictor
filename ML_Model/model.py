@@ -39,9 +39,9 @@ def get_training_data():
                        "pst_fg_blocked_distance", "pst_pat_att", "avg_pat_att", "pst_gwfg_att", "avg_fg_long", "avg_fg_pct",
                        "avg_pat_pct", "avg_def_fumbles", "pst_def_fumbles"]
     full_data = full_data.drop(columns=columns_to_drop)
-    full_data.to_csv("full_data.csv", index=False)
-    columns_with_nan = full_data.columns[full_data.isna().any()].tolist()
-    print(columns_with_nan)
+    # full_data.to_csv("full_data.csv", index=False)
+    # columns_with_nan = full_data.columns[full_data.isna().any()].tolist()
+    # print(columns_with_nan)
     y = full_data['score_diff']
     x = full_data.drop(columns=["score_diff"])
     return x, y
@@ -64,15 +64,12 @@ def train_model():
     y_arr = np.array(y)
     x_arr = np.array(x)
 
-    indexes = np.array(range(len(y_arr)))
-    plt.scatter(x=indexes, y=y_arr)
-
-    x_train, x_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.2, random_state=30)
     rf = RandomForestRegressor(random_state=42)
-    lr = LinearRegression()
+    # lr = LinearRegression()
     lasso = Lasso(alpha=0.2)
     rf.fit(x_train, y_train)
-    lr.fit(x_train, y_train)
+    # lr.fit(x_train, y_train)
     lasso.fit(x_train, y_train)
 
     filename = "nfl_model.pkl"
@@ -80,38 +77,38 @@ def train_model():
         pickle.dump(rf, file)
 
     y_pred = rf.predict(x_test)
-    lr_pred = lr.predict(x_test)
+    # lr_pred = lr.predict(x_test)
     lasso_pred = lasso.predict(x_test)
 
     # Calculate R^2 training values?
     yt_pred = rf.predict(x_train)
     r2t_rf = r2_score(y_train, yt_pred)
 
-    lrt_pred = lr.predict(x_train)
-    r2t_lr = r2_score(y_train, lrt_pred)
+    # lrt_pred = lr.predict(x_train)
+    # r2t_lr = r2_score(y_train, lrt_pred)
 
     lassot_pred = lasso.predict(x_train)
     r2t_lasso = r2_score(y_train, lassot_pred)
 
     print(f"The model has a training r2 score of {r2t_rf}")
-    print(f"The LR model has a training r2 score of {r2t_lr}")
+    # print(f"The LR model has a training r2 score of {r2t_lr}")
     print(f"The lasso model has a training r2 score of {r2t_lasso}")
 
     # Calculate R^2 value
     r2 = r2_score(y_test, y_pred)
-    r2_lr = r2_score(y_test, lr_pred)
+    # r2_lr = r2_score(y_test, lr_pred)
     r2_lasso = r2_score(y_test, lasso_pred)
     print(f"The model has a r2 score of {r2}")
-    print(f"The LR model has a r2 score of {r2_lr}")
+    # print(f"The LR model has a r2 score of {r2_lr}")
     print(f"The lasso model has a r2 score of {r2_lasso}")
 
     # Calculate mean error
     errors = abs(y_pred - y_test)
-    lr_errors = np.mean(abs(lr_pred - y_test))
+    # lr_errors = np.mean(abs(lr_pred - y_test))
     lasso_errors = np.mean(abs(lasso_pred- y_test))
     avg_error = np.mean(errors)
     print(f"The average error was {avg_error}")
-    print(f"The LR average error was {lr_errors}")
+    # print(f"The LR average error was {lr_errors}")
     print(f"The lasso average error was {lasso_errors}")
 
     # Print baseline
@@ -132,8 +129,8 @@ def train_model():
     mse = mean_squared_error(y_test, y_pred)
     print(f"The mean squared error equals {mse} for the model")
 
-    lr_mse = mean_squared_error(y_test, lr_pred)
-    print(f"This compares to a MSE for the LR model of {lr_mse}")
+    # lr_mse = mean_squared_error(y_test, lr_pred)
+    # print(f"This compares to a MSE for the LR model of {lr_mse}")
 
     lasso_mse = mean_squared_error(y_test, lasso_pred)
     print(f"And the lasso's MSE of {lasso_mse}")

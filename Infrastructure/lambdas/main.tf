@@ -32,7 +32,7 @@ resource "aws_lambda_function" "annual_stats"{
 
 resource "aws_lambda_function" "schedule"{
     function_name = "get_schedule"
-    role = aws_iam_role
+    role = aws_iam_role.scheduler_role
     package_type = "Image"
     image_uri = ""
 
