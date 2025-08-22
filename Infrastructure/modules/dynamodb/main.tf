@@ -103,8 +103,8 @@ resource "aws_dynamodb_table" "season_weeks"{
     }
 }
 
-resource "aws_dynamodb_table" "game_statistics"{
-    name = "game_statistics"
+resource "aws_dynamodb_table" "weekly_statistics"{
+    name = "weekly_statistics"
     read_capacity = 5
     write_capacity = 5
     tags = {
