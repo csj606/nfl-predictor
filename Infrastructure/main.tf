@@ -36,4 +36,7 @@ module "predictor" {
 
 module "eventbridge"{
     source = "./modules/eventbridge"
+    week_updator_arn = module.week_updates.week_updator_arn
+    season_week_arn = module.season_weeks.season_weeks_arn
+    annual_stats_arn = module.annual_stat_caller.annual_stats_caller_arn
 }
