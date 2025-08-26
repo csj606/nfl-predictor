@@ -28,7 +28,7 @@ resource "aws_iam_policy" "trigger_season_week"{
 }
 
 resource "aws_iam_role_policy_attachment" "season_week_connector"{
-    role = aws_iam_role.scheduler_trigger_role.arn
+    role = aws_iam_role.scheduler_trigger_role.name
     policy_arn = aws_iam_policy.trigger_season_week.arn
 }
 
@@ -73,7 +73,7 @@ resource "aws_iam_policy" "allow_weekly_updator_call" {
 }
 
 resource "aws_iam_role_policy_attachment" "week_update_connector"{
-    role = aws_iam_role.weekly_update_triggerer.arn
+    role = aws_iam_role.weekly_update_triggerer.name
     policy_arn = aws_iam_policy.allow_weekly_updator_call.arn
 }
 
@@ -118,7 +118,7 @@ resource "aws_iam_policy" "allow_annual_stats_invoke"{
 }
 
 resource "aws_iam_role_policy_attachment" "annual_stats_connector" {
-    role = aws_iam_role.annual_stat_triggerer.arn
+    role = aws_iam_role.annual_stat_triggerer.name
     policy_arn = aws_iam_policy.allow_annual_stats_invoke.arn
 }
 

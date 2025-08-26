@@ -34,7 +34,7 @@ resource "aws_iam_policy" "predictor_query_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "predictor_attach" {
-    role = aws_iam_role.predictor_role
+    role = aws_iam_role.predictor_role.name
     policy_arn = aws_iam_policy.predictor_query_policy.arn
 }
 

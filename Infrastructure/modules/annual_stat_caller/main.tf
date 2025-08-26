@@ -30,12 +30,12 @@ resource "aws_iam_policy" "annual_stat_write_policy" {
 
 resource "aws_iam_role_policy_attachment" "annual_stat_attach"{
   policy_arn = aws_iam_policy.annual_stat_write_policy.arn
-  role = aws_iam_role.annual_stat_caller
+  role = aws_iam_role.annual_stat_caller.name
 }
 
 resource "aws_lambda_function" "annual_stats"{
     function_name = "annual_stats"
-    role = aws_iam_role.annual_stat_caller
+    role = aws_iam_role.annual_stat_caller.name
     package_type = "Image"
     image_uri = ""
 

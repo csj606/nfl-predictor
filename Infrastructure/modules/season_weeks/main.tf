@@ -29,7 +29,7 @@ resource "aws_iam_role" "scheduler_role"{
 }
 
 resource "aws_iam_role_policy_attachment" "schedule_attach" {
-    role = aws_iam_role.scheduler_role
+    role = aws_iam_role.scheduler_role.name
     policy_arn = aws_iam_policy.schedule_write_policy.arn
 }
 
