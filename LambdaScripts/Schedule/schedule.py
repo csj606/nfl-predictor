@@ -6,8 +6,8 @@ import boto3
 def schedule():
     espn_games = requests.get("https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard")
     if not espn_games.ok:
-        print("Request failed, retrying in five minutes")
-        time.sleep(300)
+        print("Request failed, retrying in fifteen minutes")
+        time.sleep(900)
         schedule()
     data = espn_games.json()
     nfl_data = data["leagues"][0]
