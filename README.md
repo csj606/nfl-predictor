@@ -1,5 +1,5 @@
 # nfl-predictor - In Progress
-Web Application using ML to predict NFL games and scores
+This is a web application which uses a random forest regression model to predict NFL score spreads. You can also navigate to pages for each specific team, where you can view statistics specific to the team that the model is using.
 
 ### Application Structure and Features:
 
@@ -7,6 +7,8 @@ Currently, the following pages are being included as a MVP prior to the start of
 
 - A home page where the games currently being played this week are displayed, along with the predicted score
 - A page where a user can search for specific teams and view details about them
+
+More pages may be added at a later date, such as player statistics or other models linked to fantasy football.
 
 ### Stack:
 
@@ -20,12 +22,12 @@ Currently, the following pages are being included as a MVP prior to the start of
 
 ### Infrastructure:
 
-- An AWS EC2 instance for the Django backend, a Redis cache, and other containerized backend services
+- A Django backend, a Redis cache, and other containerized backend services
 - Cloudflare Pages and Workers for distributing the frontend and providing some security services
 - AWS Lambdas and EventBridge Scheduler for dataflows
 - Route 53 for DNS services
 - DynamoDB tables for our data
-- ECR for storing Docker containers, ECS for orchestrating them
+- ECR for storing Docker containers, ECS for orchestrating them using Fargate
 
 ### Data Sources:
 
