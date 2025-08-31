@@ -19,8 +19,8 @@ def get_records():
             f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{year - 1}.csv")
         weekly_season = pd.read_csv(
             f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{year}.csv")
-        regular_season.to_csv(f"annual_{year - 1}.csv")
-        weekly_season.to_csv(f"weekly_{year}.csv")
+        regular_season.to_csv(f"annual_{year - 1}.csv", index=False)
+        weekly_season.to_csv(f"weekly_{year}.csv", index=False)
 
 
 def create_training_data():
@@ -34,11 +34,10 @@ def create_training_data():
                      "fg_missed_30_39", "fg_missed_40_49", "fg_missed_50_59", "fg_missed_60_", "fg_made_30_39",
                      "fg_made_40_49", "fg_made_50_59", "fg_made_60_", "fg_missed_0_19", "fg_missed_20_29",
                      "season",
-                     "season_type", "gwfg_made", "gwfg_att", "gwfg_missed", "gwfg_blocked", "gwfg_distance",
-                     "Unnamed: 0"])
+                     "season_type", "gwfg_made", "gwfg_att", "gwfg_missed", "gwfg_blocked", "gwfg_distance",])
         annual_record.drop(
             columns=["gwfg_blocked", "gwfg_distance_list", "fg_missed_list", "fg_made_list", "fg_blocked_list",
-                     "fg_missed_60_", "fg_made_60_", "games", "season", "Unnamed: 0"])
+                     "fg_missed_60_", "fg_made_60_", "games", "season"])
         weekly_records.fillna(0)
         annual_record.fillna(0)
         # Create training data

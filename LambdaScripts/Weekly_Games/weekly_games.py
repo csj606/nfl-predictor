@@ -5,6 +5,11 @@ import time
 import boto3
 import requests
 from botocore.exceptions import ClientError
+import pandas as pd
+
+team_acronyms = ["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX",
+                 "KC", "LA", "LAC", "LV", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB",
+                 "TEN", "WAS"]
 
 
 def get_end_of_week(day_of_week):
@@ -97,6 +102,35 @@ def weekly_games():
         }
     )
 
+def update_weekly_stats():
+    year = time.localtime().tm_year
+    week_num = get_week_num()
+    weekly_stat_table = boto3.resource("dynamodb").Table("weekly_statistics")
+    check = requests.request("head", f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{year}.csv")
+    if check.status_code != 200:
+        zero = {"invalid": 0}
+        z = json.dumps(zero)
+        for team in team_acronyms:
+            weekly_stat_table.put_item(
+                Item={
+                    "team": team,
+                    "stats": z
+                }
+            )
+    else:
+        weekly_data = pd.read_csv(f"https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{year}.csv")
+        weekly_data = weekly_data.fillna(0)
+        for team in team_acronyms:
+            team_avgs = weekly_data.query("(team == @team) and ((week < @week_num) and (week > (@week_num - 3)))").reset_index(drop=True)
+            team_avgs = team_avgs.mean(numeric_only=True).to_frame().T
+            weekly_stat_table.put_item(
+                Item={
+                    "team": team,
+                    "stats": team_avgs
+                }
+            )
+
 
 if __name__ == '__main__':
     weekly_games()
+    update_weekly_stats()
