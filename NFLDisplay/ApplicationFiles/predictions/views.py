@@ -5,11 +5,8 @@ from team_statistics import TeamStatistics
 from ml_model import PredictionModel
 import constants
 
-from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 
-
-# Create your views here.
 
 def games(request):
     season = SeasonWeeks()
@@ -45,15 +42,12 @@ def predict(request):
     if name2 not in constants.team_names or name1 not in constants.team_names:
         return HttpResponseBadRequest()
 
-    team_statistics = TeamStatistics()
-    results1 = team_statistics.get_team_stats(name1)
-    if results1 == "Table doesn't exist":
+    model = PredictionModel()
+    prediction = model.model_call(name1, name2)
+    if "Error" in prediction:
         return HttpResponseServerError()
-    results2 = team_statistics.get_team_stats(name2)
-
-    model = PredictionModel
-    prediction = model.model_call(results1, results2)
-    return HttpResponse(prediction)
+    else:
+        return HttpResponse(prediction)
 
 
 def records(request):
@@ -67,8 +61,3 @@ def records(request):
         return HttpResponseServerError()
     else:
         return HttpResponse(results)
-
-
-def home(request):
-    # TODO - Import in React Application when complete
-    return render(request, "predictions/home.html")
