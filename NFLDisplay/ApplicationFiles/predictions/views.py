@@ -7,6 +7,8 @@ import constants
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 
+predictions = {}
+
 
 def games(request):
     season = SeasonWeeks()
@@ -42,11 +44,15 @@ def predict(request):
     if name2 not in constants.team_names or name1 not in constants.team_names:
         return HttpResponseBadRequest()
 
+    if predictions.get(name1 + name2) is not None:
+        return HttpResponse(predictions[name1+name2])
+
     model = PredictionModel()
     prediction = model.model_call(name1, name2)
     if "Error" in prediction:
         return HttpResponseServerError()
     else:
+        predictions[name1 + name2] = prediction
         return HttpResponse(prediction)
 
 

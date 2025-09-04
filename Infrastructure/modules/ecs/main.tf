@@ -27,20 +27,6 @@ resource "aws_ecs_service" "web_server"{
     }
 }
 
-resource "aws_ecs_service" "redis" {
-    name = "redis"
-    cluster = aws_ecs_cluster.nfl_cluster.id
-    task_definition = aws_ecs_task_definition.redis_definition.arn
-    desired_count = 1
-
-    launch_type = "FARGATE"
-    network_configuration {
-      subnets = [ var.ecs_subnet.id ]
-      security_groups = [ var.redis_security_group.id ]
-      assign_public_ip = true
-    }
-}
-
 resource "aws_ecs_task_definition" "web_server_definition" {
     family = "service"
     requires_compatibilities = [ "FARGATE" ]
@@ -68,35 +54,6 @@ resource "aws_ecs_task_definition" "web_server_definition" {
             }
         }
     }])
-}
-
-resource "aws_ecs_task_definition" "redis_definition" {
-    family = "service"
-    requires_compatibilities = ["FARGATE"]
-    cpu = "256"
-    memory = "512"
-    execution_role_arn = aws_iam_role.ecs_execution_role.arn
-
-    container_definitions = jsonencode({
-        name = "redis"
-        image = ""
-        essential = true
-        portMappings = [
-            {
-                containerPort = 6379
-                hostPort = 6379
-                protocol = "tcp"
-            }
-        ]
-        logConfiguration = {
-            logDriver = "awslogs"
-            options = {
-                awslogs-group = "/ecs/redis"
-                awslogs-region = "us-east-1"
-                awslogs-stream-prefix = "ecs"
-            }
-        }
-    })
 }
 
 resource "aws_iam_role" "ecs_execution_role"{
@@ -177,23 +134,5 @@ resource "aws_security_group" "web_server_sg" {
         to_port = 443
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
-resource "aws_security_group" "redis_sg"{
-    vpc_id = var.vpc_id
-
-    ingress {
-        from_port = 6379
-        to_port = 6379
-        protocol = "tcp"
-        security_groups = [aws_security_group.web_server_sg.id]
-    }
-
-    egress {
-        from_port = 6379
-        to_port = 6379
-        protocol = "tcp"
-        cidr_blocks = [aws_security_group.web_server_sg.id]
     }
 }
