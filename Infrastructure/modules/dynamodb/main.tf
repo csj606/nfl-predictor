@@ -18,26 +18,6 @@ resource "aws_dynamodb_table" "annual_stats" {
     }
 }
 
-resource "aws_dynamodb_table" "finished_games" {
-    name = "finished_games"
-    read_capacity = 5
-    write_capacity = 5
-    tags = {
-        name = "nfl"
-    }
-    hash_key = "week_num"
-
-    attribute {
-        name = "week_num"
-        type = "N"
-    }
-
-    attribute {
-        name = "games"
-        type = "S"
-    }
-}
-
 resource "aws_dynamodb_table" "upcoming_games"{
     name = "upcoming_games'"
     read_capacity = 5

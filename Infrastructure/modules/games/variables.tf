@@ -1,0 +1,3 @@
+variable "games_table" {
+    
+}

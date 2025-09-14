@@ -1,14 +1,6 @@
-module "vpc" {
-    source = "./modules/vpc"
-}
-
 module "annual_stat_caller" {
     source = "./modules/annual_stat_caller"
     annual_stats_arn = module.dynamodb.annual_stats_table_arn
-}
-
-module "ecs" {
-    source = "./module/ecs"
 }
 
 module "season_weeks" {
