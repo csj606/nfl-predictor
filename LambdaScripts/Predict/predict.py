@@ -4,7 +4,11 @@ import pandas as pd
 import pickle
 
 
-def prediction():
+def prediction(event, context):
+    parameters = event["queryStringParameters"]
+    team_name = parameters["teamName"]
+    oppo_name = parameters["oppoName"]
+
     annual_stats_table = boto3.resource("dynamodb").Table("annual_stats")
     weekly_stats_table = boto3.resource("dynamodb").Table("weekly_statistics")
 
@@ -84,13 +88,12 @@ def prediction():
                        "avg_fg_pct",
                        "avg_pat_pct", "avg_def_fumbles", "pst_def_fumbles"]
     combo_frame = combo_frame.drop(dropped_columns)
-    with open("model.pkl", "rb") as modelfile:
+    with (open("model.pkl", "rb") as modelfile):
         model = pickle.load(modelfile)
-        return model.predict(combo_frame.iloc[0])
+        result = model.predict(combo_frame.iloc[0])
+        return {
+            "statusCode": 200,
+            "body": result
+        }
 
 
-
-if __name__ == '__main__':
-    team_name = sys.argv[1]
-    oppo_name = sys.argv[2]
-    prediction()

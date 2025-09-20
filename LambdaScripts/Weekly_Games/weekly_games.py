@@ -131,6 +131,6 @@ def update_weekly_stats():
             )
 
 
-if __name__ == '__main__':
+def updates():
     weekly_games()
     update_weekly_stats()

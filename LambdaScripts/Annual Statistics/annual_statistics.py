@@ -25,7 +25,3 @@ def annual_stats():
                 "stats": j
             }
         )
-
-
-if __name__ == '__main__':
-    annual_stats()
