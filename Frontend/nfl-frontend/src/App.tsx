@@ -1,45 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import { Link } from 'react-router-dom'
-import { team_names } from './constants'
-import 
+import { getGames } from './relay_home'
 
-function gameDisplay(homeTeamName: String, homeTeamRecord: String, awayTeamName: String, awayTeamRecord: String){
-  const homePath = `/team/${homeTeamName}`
-  const awayPath = `/team/${homeTeamName}`
+function gameDisplay(homeTeamName: String, awayTeamName: string){
   return (
     <div className='weekly-game'>
       <div className='home-team-info'>
-        <Link to={homePath} >{homeTeamName}</Link>
-        <p>{homeTeamRecord}</p>
+        <p>{homeTeamName}</p>
       </div>
       <p className='versus'>Versus</p>
       <div className='away-team-info'>
-        <Link to={awayPath} >{awayTeamName}</Link>
-        <p>{awayTeamRecord}</p>
+        <p>{awayTeamName}</p>
       </div>
+      <p></p>
     </div>
   )
 }
-import { getGames } from './relay_home'
+
 
 
 function App() {
-  const [teams, setTeams] = useState(team_names)
-  const [games, setGames] = useState([])
+  const [games, setGames] = useState([] as any[]);
 
   useEffect(() => {
     async function grabGames(){
-      const thisWeeksGames = getGames()
-      setGames(thisWeeksGames)
+      const thisWeeksGames = await getGames()
+      var games= (thisWeeksGames.get("games") as unknown as any[]) ?? []
+      setGames(games)
     }
     grabGames()
-  })
+  }, [])
 
   return (
     <>
-      {teams.map(team => {
-        gameDisplay()
+      {games.map(game => {
+        gameDisplay(game["team"], game["oppo_team"])
       })}
     </>
   )

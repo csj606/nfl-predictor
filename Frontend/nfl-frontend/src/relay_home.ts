@@ -6,15 +6,21 @@ dotenv.config()
  * 
  * @returns {JSON} An object containing a Game object
  */
-export async function getGames(){
+export async function getGames(): Promise<Map<string, string>>{
+    var r = ""
     await fetch(`https://${import.meta.env.VITE_BACKEND_URL}/games`)
     .then(result => {
         if(!result.ok){
             throw Error
         }else{
+            r = JSON.stringify(result)
             return result.body
         }
     })
+    .catch(result => {
+        return result
+    })
+    return JSON.parse(r)
 }
 
 /**
