@@ -1,19 +1,18 @@
 # nfl-predictor - In Progress
-This is a web application which uses a random forest regression model to predict NFL score spreads. You can also navigate to pages for each specific team, where you can view statistics specific to the team that the model is using.
+This is a web application which uses a random forest regression model to predict NFL score spreads. The application displays the predicted score differential for a game depending on the most recent team statistics for each side.
 
 ### Application Structure and Features:
 
-Currently, the following pages are being included as a MVP prior to the start of the 2025 NFL season:
+Currently, the following page are being included as a MVP:
 
 - A home page where the games currently being played this week are displayed, along with the predicted score
-- A page where a user can search for specific teams and view details about them
 
 More pages may be added at a later date, such as player statistics or other models linked to fantasy football.
 
 ### Stack:
 
 - Frontend: TypeScript + React components
-- Backend: Django
+- Backend: AWS Lambda Functions written in Python, powered by AWS API Gateway
 - Database: Amazon DynamoDB
 - CI/CD pipeline: GitHub Actions, ECR, ECS
 - Testing frameworks: PyTest and Selenium
@@ -22,12 +21,11 @@ More pages may be added at a later date, such as player statistics or other mode
 
 ### Infrastructure:
 
-- A Django backend, a Redis cache, and other containerized backend services
+- AWS Lambdas and API Gateway for backend services
 - Cloudflare Pages and Workers for distributing the frontend and providing some security services
-- AWS Lambdas and EventBridge Scheduler for dataflows
-- Route 53 for DNS services
-- DynamoDB tables for our data
-- ECR for storing Docker containers, ECS for orchestrating them using Fargate
+- AWS Lambdas and EventBridge Scheduler for data pipelines
+- DynamoDB tables for the data
+- ECR for storing Docker containers
 
 ### Data Sources:
 
@@ -37,7 +35,6 @@ This is a list of data sources used throughout the project. I will update the li
 - nfl-verse (data licensed under the MIT license)
 
 ### Repository Structure:
-- ./NFLDisplay: contains the Django backend code
 - ./Frontend: contains the React + TypeScript frontend code.
 - ./ML_Model: contains all of the code and data related to the ML model powering the platform
 - ./Infrastructure: contains the Terraform scripts to deploy the relevant AWS infrastructure
