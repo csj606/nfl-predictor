@@ -1,28 +1,21 @@
-# nfl-predictor - In Progress
+# nfl-predictor - On Pause
 This is a web application which uses a random forest regression model to predict NFL score spreads. The application displays the predicted score differential for a game depending on the most recent team statistics for each side.
 
 ### Application Structure and Features:
 
-Currently, the following page are being included as a MVP:
-
-- A home page where the games currently being played this week are displayed, along with the predicted score
-
-More pages may be added at a later date, such as player statistics or other models linked to fantasy football.
+Currently, the backend and infrastructure is fully constructed, with the model sitting at an accuracy of around 11%. While this could be improved, it would take a significant amount of data, to the point where I've decided to halt work. The frontend is not done, but frankly I've done what I've considered to be the interesting part of the project: the backend. For obvious reasons, I would also caution against any individual using this model to place bets on NFL games.
 
 ### Stack:
 
 - Frontend: TypeScript + React components
 - Backend: AWS Lambda Functions written in Python, powered by AWS API Gateway
 - Database: Amazon DynamoDB
-- CI/CD pipeline: GitHub Actions, ECR, ECS
-- Testing frameworks: PyTest and Selenium
 - ML Model: Random forest model using Scikit-Learn
 - IaC: Terraform
 
 ### Infrastructure:
 
 - AWS Lambdas and API Gateway for backend services
-- Cloudflare Pages and Workers for distributing the frontend and providing some security services
 - AWS Lambdas and EventBridge Scheduler for data pipelines
 - DynamoDB tables for the data
 - ECR for storing Docker containers
