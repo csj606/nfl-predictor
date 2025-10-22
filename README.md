@@ -3,7 +3,7 @@ This is a web application which uses a random forest regression model to predict
 
 ### Application Structure and Features:
 
-Currently, the backend and infrastructure is fully constructed, with the model sitting at an accuracy of around 11%. While this could be improved, it would take a significant amount of data, to the point where I've decided to halt work. The frontend is not done, but frankly I've done what I've considered to be the interesting part of the project: the backend. For obvious reasons, I would also caution against any individual using this model to place bets on NFL games.
+Currently, the backend and infrastructure is fully constructed, with the model sitting at an accuracy of around 11%. While this could be improved, it would take a significant amount of data, to the point where I've decided to halt work. The frontend is not done, but frankly I've done what I've considered to be the interesting part of the project: the backend. **For obvious reasons, I would also caution against any individual using this model to place bets on NFL games**.
 
 ### Stack:
 
